@@ -1,5 +1,5 @@
 import numpy as np
-from test_quant_log_quantize import quantize
+from quantize import quantize
 
 def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr, level_w,level_q, type_w,type_q, tolerance=1e-02):
     # INPUT:
@@ -42,7 +42,8 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr, level_w,level_q, type_
             break
         if np.linalg.norm(gradient) < tolerance:
             break
-        w = quantize(w, level_w, type_w).reshape(-1, 1)
+        #w = quantize(w, level_w, type_w).reshape(-1, 1)
+        w = np.sign(w)
         prior_loss = loss
         prior_gradient = gradient
         num_iter += 1

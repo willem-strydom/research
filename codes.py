@@ -1,12 +1,12 @@
 import numpy as np
-from low_access_master import master
-from low_access_general_decoder import general_decoder
+from master import master
+from general_decoder import general_decoder
 def main():
     data = np.genfromtxt("framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
     a = np.eye(3)
     b = np.ones((3,1))
     G = np.hstack((a,b))
-    from low_access_decoder import decoder
+    from decoder import decoder
     decoder = decoder(3)
     data = np.hstack((data,np.zeros((data.shape[0],2)))) # need m|data.shape[1] = num cols
     m = 6
@@ -15,7 +15,7 @@ def main():
 
 #for real this time
 def hamming():
-    from low_access_general_decoder import general_decoder
+    from general_decoder import general_decoder
     data = np.genfromtxt("framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
     I = np.eye(7)
     """I = np.where(I == 1, -1, I)

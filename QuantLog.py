@@ -1,6 +1,6 @@
 import numpy as np
-from test_quant_log_quantize import quantize
-
+from quantize import quantize
+from query import query
 '''
 
     INPUT:
@@ -15,12 +15,11 @@ from test_quant_log_quantize import quantize
 
     [d,n]=size(xTr);
 '''
-import csv
 
 
-def quantlogistic(w,xTr,yTr,num_bins, type):
-
-    y_pred = w.T @ xTr
+def quantlogistic(w,xTr,yTr,num_bins, type, nodes_array):
+    #y_pred = w.T @ xTr ... now with low access
+    y_pred = query(w,nodes_array).reshape(-1,1)
     vals = yTr * y_pred
     #keeping same loss function as for normal log loss?
     loss = np.mean(np.log(1 + np.exp(-vals)))
@@ -33,7 +32,8 @@ def quantlogistic(w,xTr,yTr,num_bins, type):
 
     # then quantize
 
-    beta = quantize(vals, num_bins, type)
+    #beta = quantize(vals, num_bins, type)
+    beta = np.sign(vals)
     gradient = -np.mean(yTr * xTr * beta, axis = 1).reshape(-1, 1)
 
     # store the values for later analysis of distribution...

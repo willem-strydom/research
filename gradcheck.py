@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from test_quant_log_experiment import experiment
-from test_quant_log_experiment import test_loss
-from test_quant_log_QuantLog import quantlogistic
-from test_quant_log_NormalLog import normallogistic
+from quant_log_experiment import experiment
+from quant_log_experiment import test_loss
+from QuantLog import quantlogistic
+from NormalLog import normallogistic
 import random
 scaler = MinMaxScaler(feature_range=(-1, 1))
 """

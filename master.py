@@ -1,6 +1,6 @@
-from low_access_node import node
+from node import node
 import numpy as np
-from low_access_query import query
+from query import query
 def master(m: int, data: np.ndarray, decoder: dict, G: np.ndarray):
     """
 

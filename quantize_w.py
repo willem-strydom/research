@@ -1,5 +1,5 @@
 import numpy as np
-from test_quant_log_binning import binning
+from binning import binning
 
 def quantize_w(w,num_bins):
     """
