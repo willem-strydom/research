@@ -13,6 +13,7 @@ def master(m: int, data: np.ndarray, decoder: dict, G: np.ndarray):
     # init nodes and partition data
     nodes_array = []
     width = int(data.shape[1]/m) # number of cols of data stored at each node
+    print(data.shape[1])
     for i in range(m):
         # use most intuitive partition scheme
         nodes_array.append(node(data[:, width*i:width*(1+i)], decoder, G))
