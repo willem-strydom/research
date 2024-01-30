@@ -7,24 +7,34 @@ import random
 from GrdDscntQuant import grdescentquant
 from QuantLog import quantlogistic
 scaler = MinMaxScaler(feature_range=(-1, 1))
-"""
-#loading and sorting the data
-diabetes_data = pd.read_csv("diabetes.csv").to_numpy()
-diabetes_x = diabetes_data[:,:-1]
-diabetes_y = diabetes_data[:,-1]
-diabetes_y = np.where(diabetes_y == 0,-1, diabetes_y)
-# avoid overflow error
-
-diabetes_x = scaler.fit_transform(diabetes_x)
-bias = np.ones((diabetes_x.shape[0],1))
-diabetes_x = np.hstack((bias,diabetes_x))
-"""
 from gen_data import gen_data
-X,y = gen_data(200,12)
+from general_decoder import general_decoder
+from master import master
+X,y = gen_data(200,19)
 X = scaler.fit_transform(X)
-X = X.T
-y = y.T
 func = quantlogistic
-w0 = np.random.uniform(-1, 1, (X.shape[0], 1))
+w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
+y = np.array(y).reshape(-1,1)
+I = np.eye(7)
+B = np.array([
+        [1,1,1,1,1,1,1],
+        [-1,-1,-1,1,1,1,1],
+        [-1,1,1,-1,-1,1,1],
+        [1,-1,-1,-1,-1,1,1],
+        [1,-1,1,-1,1,-1,1],
+        [-1,1,-1,-1,1,-1,1],
+        [-1,-1,1,1,-1,-1,1],
+        [1,1,-1,1,-1,-1,1]
+    ]).T
+G = np.hstack((I,B))
+decoder = general_decoder(B.T)
+nodes_array = master(3, X, decoder, G)
 
-w,num_iters = grdescentquant(func, w0, 0.1, 10000, X, y, level_w, level_q, type_w, type_q, tolerance=1e-02)
+w0 = np.sign(w0)
+w,num_iters = grdescentquant(func, w0, 0.1, 10000, X, y, nodes_array, tolerance=1e-02)
+print(num_iters)
+
+correct = np.where(np.sign(np.dot(X,w)) == y,1,0)
+
+e_in = 1 - np.sum(correct)/X.shape[0]
+print(e_in)

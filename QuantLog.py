@@ -17,10 +17,10 @@ from query import query
 '''
 
 
-def quantlogistic(w,xTr,yTr,num_bins, type, nodes_array):
+def quantlogistic(w,xTr,yTr, nodes_array):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = query(w,nodes_array).reshape(-1,1)
-    vals = yTr * y_pred
+    y_pred = query(w,nodes_array)[0]
+    vals = yTr.flatten() * y_pred
     #keeping same loss function as for normal log loss?
     loss = np.mean(np.log(1 + np.exp(-vals)))
 
@@ -34,7 +34,8 @@ def quantlogistic(w,xTr,yTr,num_bins, type, nodes_array):
 
     #beta = quantize(vals, num_bins, type)
     beta = np.sign(vals)
-    gradient = -np.mean(yTr * xTr * beta, axis = 1).reshape(-1, 1)
+    beta = beta.reshape(-1,1)
+    gradient = -np.mean(yTr * xTr * beta, axis = 0).reshape(-1, 1)
 
     # store the values for later analysis of distribution...
 
