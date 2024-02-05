@@ -13,12 +13,17 @@ class node:
         self.coded_data = np.dot(data,G)
 
     def query(self, w:np.ndarray):
+        """
+        :param w:
+        :return: self.data @ w , and number of cols of coded data accessed to do that computation
+        """
         # return data@w.T based on decoding protocol...
-        low_acc_w = self.decoder[tuple(w)] #python dict need immutable keys I just learned
+        low_acc_w = self.decoder[tuple(w)]
         index = np.where(low_acc_w!=0,1,0)
         access = np.sum(index)
         index = index.astype(bool)
         # response = self.coded_data @ low_acc_w.T
+        # slice the accessed columns and then take the dot product
         accessed_columns = self.coded_data[:,index]
         nonzero_low_acc_w = low_acc_w[index]
         response = accessed_columns @ nonzero_low_acc_w

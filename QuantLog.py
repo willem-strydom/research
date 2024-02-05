@@ -19,28 +19,17 @@ from query import query
 
 def quantlogistic(w,xTr,yTr, nodes_array):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = query(w,nodes_array)[0]
+    y_pred = query(w,nodes_array[0])[0]
     vals = yTr.flatten() * y_pred
-    #keeping same loss function as for normal log loss?
     loss = np.mean(np.log(1 + np.exp(-vals)))
 
-    # take sigmoid of vals
-
-    func = lambda x: 1/(1+np.exp(x))
-    func = np.vectorize(func)
-    vals = func(vals)
-
-    # then quantize
-
-    #beta = quantize(vals, num_bins, type)
-    beta = np.sign(vals)
+    # then quantize yi*qi
+    vals = vals*yTr
+    beta = np.where(vals>0,-1,1)
     beta = beta.reshape(-1,1)
-    gradient = -np.mean(yTr * xTr * beta, axis = 0).reshape(-1, 1)
+    gradient = -1 * query(beta, nodes_array[1])[0]/len(yTr)
+    gradient = gradient.reshape(-1,1)
+    #want to find vals.T@X with the low access scheme
+    #gradient = -np.mean(yTr * xTr * beta, axis = 0).reshape(-1, 1)
 
-    # store the values for later analysis of distribution...
-
-    """file_path = f'values{num_bins}.csv'
-    with open(file_path, "a") as f:
-        np.savetxt(f, vals, delimiter=',')
-"""
     return loss, gradient

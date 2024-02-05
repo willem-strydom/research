@@ -27,6 +27,7 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr,nodes_array, tolerance=
 
     while num_iter < maxiter:
         loss, gradient = func(w, xTr, yTr, nodes_array)
+        print(f"gradient: {gradient.shape}")
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -45,12 +46,12 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr,nodes_array, tolerance=
             break
         #w = quantize(w, level_w, type_w).reshape(-1, 1)
         w = np.sign(w)
+        print(f"w: {w.shape}")
         if np.array_equal(gradient,prior_gradient):
-            print(prior_gradient, gradient)
             num_iter +=1
             break
         prior_loss = loss
-        prior_gradient = gradient
+        prior_gradient = gradient.copy()
         num_iter += 1
 
     return w, num_iter
