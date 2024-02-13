@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from GrdDscnt import grdescentnormal
 from GrdDscntQuant import grdescentquant
-from NormalLog import normallogistic
-from QuantLog import quantlogistic
+from normal_logistic import normallogistic
+from quant_logistic import quant_logistic
 from sklearn.model_selection import train_test_split
 import time
 
@@ -24,7 +24,7 @@ def experiment(X,y):
     # remember to transpose data to have shape dxn
     quantizers = ['unif', 'gauss']
     levels = [1,2,3,4]
-    func = quantlogistic
+    func = quant_logistic
     w0 = np.random.uniform(-1, 1, (X.shape[0], 1))
     for type_w in quantizers:
         for type_q in quantizers:
@@ -88,7 +88,7 @@ def experiment(X,y):
 
     #do the same for quantized version
     for num_bin in bins:
-        w_quant, iters = grdescentquant(quantlogistic, w0, 0.1, 50000, X_train, y_train, num_bin)
+        w_quant, iters = grdescentquant(quant_logistic, w0, 0.1, 50000, X_train, y_train, num_bin)
         loss = test_loss(w_quant,X_test,y_test)
 
         quant_iters.append((num_bin, iters))

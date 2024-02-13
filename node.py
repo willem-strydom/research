@@ -10,10 +10,9 @@ class node:
         """
         self.G = G
         self.decoder = decoder
-        #self.coded_data = np.dot(data,G)
         self.eye = data
-        self.row_par = np.dot(data.T,G)
-        self.col_par = np.dot(data,G)
+        self.row_par = np.dot(data.T,G)[:,G.shape[0]:]
+        self.col_par = np.dot(data,G)[:,G.shape[0]:]
 
     def query(self, w:np.ndarray):
         """
@@ -22,7 +21,8 @@ class node:
         :return: self.data @ w , or w@self.data and number of cols of coded data accessed to do that computation
         """
         # return data@w.T based on decoding protocol...
-        low_acc_w = self.decoder[tuple(w)]
+        #print(f"hi, {w} --\n")
+        low_acc_w = self.decoder[tuple(w.flatten())]
         index = np.where(low_acc_w != 0, 1, 0)
         access = np.sum(index)
         index = index.astype(bool)
@@ -32,17 +32,17 @@ class node:
         # accessed_columns = self.coded_data[:,index] was the original method
 
         #columns
-        w = self.G.shape[0]
+        m = self.G.shape[0]
         if w.shape[1] == 1:
 
-            accessed_columns = np.hstack(self.eye[:, :index[0,w]], self.col_par[:,index[:,w:]])
+            accessed_columns = np.hstack((self.eye[:, index[0:m]], self.col_par[:,index[m:]]))
             nonzero_low_acc_w = low_acc_w[index]
             response = accessed_columns @ nonzero_low_acc_w
 
         #rows
-        if w.shape == (1,7):
+        if w.shape[0] == 1:
 
-            accessed_columns = np.hstack(self.eye.T[:, :index[0, w]], self.row_par[:, index[:, w:]])
+            accessed_columns = np.hstack((self.eye.T[:, index[0: m]], self.row_par[:, index[m:]]))
             nonzero_low_acc_w = low_acc_w[index]
             response = accessed_columns @ nonzero_low_acc_w
 

@@ -33,7 +33,7 @@ def general_decoder(B):
         code[best_ind] = sign
         lookup_table[tuple(v)] = np.hstack((correction,code))
     return lookup_table
-
+"""
 G = np.array([
         [1,1,1,1,1,1,1],
         [-1,-1,-1,1,1,1,1],
@@ -45,4 +45,4 @@ G = np.array([
         [1,1,-1,1,-1,-1,1]
     ])
 table = general_decoder(G)
-# just realized I need to check the case where the closest vector is in the compliment
+"""

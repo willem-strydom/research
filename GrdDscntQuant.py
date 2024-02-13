@@ -1,7 +1,7 @@
 import numpy as np
 from quantize import quantize
 from master import master
-def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr,nodes_array, tolerance=1e-02):
+def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr, master, tolerance=1e-02):
     # INPUT:
     # func function to minimize
     # w_trained = initial weight vector
@@ -26,8 +26,7 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr,nodes_array, tolerance=
     # the loss decreases every iteration
 
     while num_iter < maxiter:
-        loss, gradient = func(w, xTr, yTr, nodes_array)
-        print(f"gradient: {gradient.shape}")
+        loss, gradient = func(w, xTr, yTr, master)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -46,7 +45,6 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr,nodes_array, tolerance=
             break
         #w = quantize(w, level_w, type_w).reshape(-1, 1)
         w = np.sign(w)
-        print(f"w: {w.shape}")
         if np.array_equal(gradient,prior_gradient):
             num_iter +=1
             break

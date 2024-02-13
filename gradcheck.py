@@ -3,8 +3,8 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from quant_log_experiment import experiment
 from quant_log_experiment import test_loss
-from QuantLog import quantlogistic
-from NormalLog import normallogistic
+from quant_logistic import quant_logistic
+from normal_logistic import normallogistic
 import random
 scaler = MinMaxScaler(feature_range=(-1, 1))
 """
@@ -34,9 +34,9 @@ sonar_y = np.where(sonar_y == "M",1,-1)
 w_test = np.random.rand(sonar_x.shape[1]) *2 -1
 
 loss, ng = normallogistic(w_test,sonar_x.T,sonar_y.T)
-"""loss, qg1 = quantlogistic(w_test,sonar_x.T,sonar_y.T,1)
-loss, qg2 = quantlogistic(w_test,sonar_x.T,sonar_y.T,2)"""
-loss, qg3 = quantlogistic(w_test,sonar_x.T,sonar_y.T,3)
+"""loss, qg1 = quant_logistic(w_test,sonar_x.T,sonar_y.T,1)
+loss, qg2 = quant_logistic(w_test,sonar_x.T,sonar_y.T,2)"""
+loss, qg3 = quant_logistic(w_test, sonar_x.T, sonar_y.T, 3)
 
 gradients = np.hstack((ng,qg3))
 print(gradients)
