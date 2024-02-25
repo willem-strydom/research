@@ -15,7 +15,7 @@ from master import master
 
 
 
-X,y = gen_data(210,19) #ends up giving 21 features
+X,y = gen_data(210,190) #ends up giving 21 features
 X = scaler.fit_transform(X)
 func = quant_logistic
 w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
