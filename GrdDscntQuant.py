@@ -2,31 +2,31 @@ import numpy as np
 from quantize import quantize
 from master import master
 def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr, master, tolerance=1e-02):
-    # INPUT:
-    # func function to minimize
-    # w_trained = initial weight vector
-    # stepsize = initial gradient descent stepsize
-    # tolerance = if norm(gradient)<tolerance, it quits
-    #
-    # OUTPUTS:
-    #
-    # w = final weight vector
+    """
+    :param func: quantlog function
+    :param w0: usually uniformly random in {-1,1}^d
+    :param stepsize: initial learning rate, rate is modular in implementation
+    :param maxiter: maximum iterations until hardstop
+    :param xTr: train data.... vestigial at this point
+    :param yTr: train labels
+    :param master: train data stored in coded distributed system
+    :param tolerance: tiniest gradient norm acceptable
+    :return: w, num_iter
+    """
     eps = 2.2204e-14  # minimum step size for gradient descent
 
-    # YOUR CODE HERE
     num_iter = 0
     w = w0
     gradient = 0
     prior_gradient = np.zeros(w.shape)
-    # why init to 0? should be large number or else bad no?
-    prior_loss = 1e06
+    prior_loss = 10e06
     # Increase the stepsize by a factor of 1.01 each iteration where the loss goes down,
     # and decrease it by a factor 0.5 if the loss went up. ...
     # also undo the last update in that case to make sure
     # the loss decreases every iteration
 
     while num_iter < maxiter:
-        loss, gradient = func(w, xTr, yTr, master)
+        loss, gradient = func(w, yTr, master)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -43,8 +43,7 @@ def grdescentquant(func, w0, stepsize, maxiter, xTr, yTr, master, tolerance=1e-0
             break
         if np.linalg.norm(gradient) < tolerance:
             break
-        #w = quantize(w, level_w, type_w).reshape(-1, 1)
-        w = np.sign(w)
+        w = quantize(w, 2, "unif").reshape(-1, 1)
         if np.array_equal(gradient,prior_gradient):
             num_iter +=1
             break

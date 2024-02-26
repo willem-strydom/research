@@ -1,14 +1,14 @@
 import numpy as np
 from binning import binning
 
-def quantize(vals, level_q, type_q):
+def quantize(vals, level, type):
     """
     :param vals: numpy nx1 array of func arguments that will be quantized
-    :param level_q: int: log2 number of bins/quantization levels
+    :param level: int: log2 number of bins/quantization levels
     :return: nx1 numpy array of quantized values
     """
 
-    partitions = binning(vals, level_q, type_q)
+    partitions = binning(vals, level, type)
     # alpha is a list of which bin each val belongs to
 
     # processing partitions... maybe not a great way to do this

@@ -1,7 +1,7 @@
 import numpy as np
 def query(w, nodes_array):
     """
-    :param w: query on RAW data
+    :param w: query on RAW data in {-1,1}^n
     :param nodes_array: the storage nodes from master in an mxn array
     :return: np.dot(w,data) but like with low access
     """
