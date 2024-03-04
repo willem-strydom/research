@@ -8,36 +8,41 @@ def uniform_query(w, master):
     :param master: stores data array which is being queried
     :return: <data,w> or <w,data>
     """
-    values = sorted(set(w))
-    d_min = values[1] - values[0]
-    for i in range(1,len(values)):
-        d = values[i] - values[i-1]
-        if d < d_min:
-            d_min = d
-    a = np.min(w)
+    w_flat = w.flatten()
+    values = np.unique(w_flat)  # More efficient and readable way to get unique values
+    d_min = np.min(np.diff(np.sort(values)))  # More efficient calculation of minimum difference
+
+    a = np.min(values)
     d = d_min
 
-    # make lookup table and key to map w to {-1,1} querries
-    index = [a + i*d for i in range(len(values))]
-    first = [-1,-1,1,1]
-    second = [-1,1,-1,1]
-    table = np.hstack((index,first,second))
-    query_table = pd.DataFrame(table)
-    query_table = query_table.set_index(query_table.columns[0])
+    # Construct index for lookup table
+    index = a + np.arange(len(values)) * d
+    tolerance = 0.001
+    if not np.allclose(index, values, atol=tolerance):
+        print("bad quantization")
+    index = values
 
-    # construct the new queries and use query() to send them to the master
-    w0 = np.array([query_table[w[i],0] for i in range(len(w))]).reshape(w.shape)
-    w1 = np.array([query_table[w[i],1] for i in range(len(w))]).reshape(w.shape)
-    ans0 = query(w0, master.nodes_array)
-    ans1 = query(w1, master.nodes_array)
+    q = len(values)
+    column_names = list(range(q))
+    query_table = pd.DataFrame(table, columns=column_names).set_index('Index')
+
+    # Vectorized approach to construct new queries
+    response = np.zeros(w.shape)
+    for i in range(1,q+1):
+        response += 2**(q-i-1)*d*query_table.loc[w_flat, i].values.reshape(w.shape)
 
     # get the corresponding parity depending on shape of w
     if w.shape[0] == 1:
         parity = master.row_parity
-    elif w.shape[1] ==1:
+    elif w.shape[1] == 1:
         parity = master.col_parity
 
     # add up responses according to algorithm
 
-    response = d*ans0 + (d/2)*ans1 + ((2*a + 3*d)/2) * parity
+    response += parity
+
     return response
+
+q = 3
+table = np.array(np.meshgrid(*[[-1, 1]] * q)).reshape(-1, q)
+print(table)

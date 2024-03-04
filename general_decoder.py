@@ -20,6 +20,7 @@ def general_decoder(B):
                 best_code = b
                 best_ind = i
                 sign = 1
+
             dummy = np.where(-v != b, 1, 0)
             dist = np.sum(dummy)
             if dist < best:
@@ -33,6 +34,7 @@ def general_decoder(B):
         code[best_ind] = sign
         lookup_table[tuple(v)] = np.hstack((correction,code))
     return lookup_table
+
 """
 G = np.array([
         [1,1,1,1,1,1,1],
