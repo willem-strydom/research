@@ -1,6 +1,7 @@
 from query import query
 import numpy as np
 import pandas as pd
+from generate_binary_matrix import generate_binary_matrix
 
 def uniform_query(w, master):
     """
@@ -20,11 +21,14 @@ def uniform_query(w, master):
     tolerance = 0.001
     if not np.allclose(index, values, atol=tolerance):
         print("bad quantization")
-    index = values
+    index = values # after check that all vals are present in query
+    index.reshape(-1, 1)
 
     q = len(values)
     column_names = list(range(q))
-    query_table = pd.DataFrame(table, columns=column_names).set_index('Index')
+    table = np.hstack((index, generate_binary_matrix(q)))
+    query_table = pd.DataFrame(table, columns=column_names)
+    query_table = query_table.set_index(query_table.columns[0])
 
     # Vectorized approach to construct new queries
     response = np.zeros(w.shape)
@@ -39,10 +43,6 @@ def uniform_query(w, master):
 
     # add up responses according to algorithm
 
-    response += parity
+    response += parity * (2*a + 2**q -1)/2
 
     return response
-
-q = 3
-table = np.array(np.meshgrid(*[[-1, 1]] * q)).reshape(-1, q)
-print(table)

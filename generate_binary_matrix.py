@@ -1,6 +1,6 @@
 import numpy as np
 """
-make a numpy array of size 2^n x n where each row is the binary representation of thw row numberin -1,1.
+make a numpy array of size 2^n x n where each row is the binary representation of the row number in {-1,1}.
 (-1 mapped to 0)
 """
 
@@ -20,3 +20,4 @@ def generate_binary_matrix(n):
     binary_matrix = np.where(binary_matrix == 0, -1, 1)
 
     return binary_matrix
+
