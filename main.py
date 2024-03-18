@@ -27,7 +27,6 @@ w0 = quantize(w0,2,"unif")
 
 w, num_iters = grdescentquant(func, w0, 0.1, 10000, Master, tolerance=1e-02)
 print(num_iters)
-print(w.shape)
 preds = np.sign(np.dot(X,w))
 err = np.mean(y != [preds])
 print(err)

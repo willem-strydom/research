@@ -4,6 +4,7 @@ import pandas as pd
 from generate_binary_matrix import generate_binary_matrix
 import math
 from config import X, w_lvl, grd_lvl
+from impute import impute
 
 def uniform_query(w, Master):
     """
@@ -20,18 +21,29 @@ def uniform_query(w, Master):
     d = d_min
 
     # Construct index for lookup table
-    index = a + np.arange(len(values)) * d
-    tolerance = 0.001
-    if not np.allclose(index, values, atol=tolerance):
+    q = len(values)
+    lvl = 0
+    expected_len = 0
+    if w.shape[0] == 1:
+        expected_len = 2**w_lvl
+        lvl = w_lvl
+    else:
+        expected_len = 2**grd_lvl
+        lvl = grd_lvl
+
+    if q != expected_len:
+
+        print(f"correcting bad quantization {q, expected_len, values}")
         # robust index creation is needed since there is a decent chance that at some point
         # a non-representative w will be passed
-        raise ValueError(f"bad quantization received: {values}, {index}, {d_min}")
-    index = values # check that all vals are present in query
+        # search for missing values, and impute
+        values = impute(values,expected_len)
+
+    index = values
     index = index.reshape(-1, 1)
 
     # create query table
-    q = len(values)
-    lvl = int(math.log2(q))
+
     column_names = list(range(0, lvl+1))
 
     table = np.hstack((index, generate_binary_matrix(lvl)))
