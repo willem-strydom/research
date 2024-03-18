@@ -9,8 +9,8 @@ class master:
     def __init__(self,data,G):
 
         self.nodes_array = make_nodes(data,G)
-        self.col_parity = data@np.ones(data.shape[1])
-        self.row_parity = np.ones(data.shape[0])@data
+        self.col_parity = (data@np.ones(data.shape[1])).reshape(-1,1)
+        self.row_parity = (np.ones(data.shape[0])@data).reshape(1,-1)
 
 
 def make_nodes(data: np.ndarray, G: np.ndarray):

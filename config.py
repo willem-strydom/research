@@ -10,24 +10,9 @@ from gen_data import gen_data
 from master import master
 
 scaler = MinMaxScaler(feature_range=(-1, 1))
-X,y = gen_data(210,190) #ends up giving 21 features
+
+grd_lvl = 3
+w_lvl = 3
+X, y = gen_data(210, 190)  # ends up giving 210 features
 X = scaler.fit_transform(X)
-y = np.array(y).reshape(-1,1)
-I = np.eye(7)
-B = np.array([
-        [1,1,1,1,1,1,1],
-        [-1,-1,-1,1,1,1,1],
-        [-1,1,1,-1,-1,1,1],
-        [1,-1,-1,-1,-1,1,1],
-        [1,-1,1,-1,1,-1,1],
-        [-1,1,-1,-1,1,-1,1],
-        [-1,-1,1,1,-1,-1,1],
-        [1,1,-1,1,-1,-1,1]
-    ]).T
-G = np.hstack((I,B))
-
-Master = master(X,G)
-
-
-
-
+y = np.array(y).reshape(-1, 1)

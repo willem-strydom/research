@@ -1,7 +1,7 @@
 import numpy as np
 from quantize import quantize
-from master import master
-def grdescentquant(func, w, stepsize, maxiter, tolerance=1e-02):
+from config import w_lvl
+def grdescentquant(func, w, stepsize, maxiter, Master, tolerance=1e-02):
     """
     :param func: quantlog function
     :param w0: usually uniformly random in {-1,1}^d
@@ -10,13 +10,12 @@ def grdescentquant(func, w, stepsize, maxiter, tolerance=1e-02):
     :param xTr: train data.... vestigial at this point
     :param yTr: train labels
     :param master: train data stored in coded distributed system
-    :param tolerance: tiniest gradient norm acceptable
+    :param tolerance: The smallest gradient norm acceptable
     :return: w, num_iter
     """
     eps = 2.2204e-14  # minimum step size for gradient descent
     w = w.reshape(-1,1)
     num_iter = 0
-
     gradient = 0
     prior_gradient = np.zeros(w.shape)
     prior_loss = 10e06
@@ -26,7 +25,7 @@ def grdescentquant(func, w, stepsize, maxiter, tolerance=1e-02):
     # the loss decreases every iteration
 
     while num_iter < maxiter:
-        loss, gradient = func(w)
+        loss, gradient = func(w,Master)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -43,7 +42,7 @@ def grdescentquant(func, w, stepsize, maxiter, tolerance=1e-02):
             break
         if np.linalg.norm(gradient) < tolerance:
             break
-        w = quantize(w, 2, "unif").reshape(-1, 1)
+        w = quantize(w, w_lvl, "unif").reshape(-1, 1)
         if np.array_equal(gradient,prior_gradient):
             num_iter +=1
             break

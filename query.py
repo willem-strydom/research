@@ -1,10 +1,12 @@
 import numpy as np
-def query(w, nodes_array):
+
+def query(w, Master, X):
     """
     :param w: query on RAW data in {-1,1}^n
     :param nodes_array: the storage nodes from master in an mxn array
     :return: np.dot(w,data) but like with low access
     """
+    nodes_array = Master.nodes_array
     rows = nodes_array.shape[0]
     cols = nodes_array.shape[1]
 
@@ -25,7 +27,9 @@ def query(w, nodes_array):
             response = np.hstack((response))
             ans_array.append(response)
         ans_array = np.vstack((ans_array))
-        return np.sum(ans_array, axis = 0)
+
+        resp = np.sum(ans_array, axis=0)
+        return resp.reshape(1,-1)
 
     # for a querry on the columns... I think just change the order of the loops maybe
     if w.shape[1] == 1:
@@ -36,9 +40,10 @@ def query(w, nodes_array):
                 response.append(nodes_array[m,n].query(w[width*n:width*(1+n)].reshape(-1,1)))
             response = np.hstack(response)
             ans_array.append(response)
-
         ans_array = np.vstack(ans_array)
-        return np.sum(ans_array, axis = 0)
+
+        resp = np.sum(ans_array, axis = 0)
+        return resp.reshape(-1,1)
 
     """for i in range(1,m):
         query = nodes_array[i].query(w[width*i:width*(i+1)])
