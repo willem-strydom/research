@@ -32,18 +32,17 @@ def uniform_query(w, Master):
         lvl = grd_lvl
 
     if q != expected_len:
-
-        print(f"correcting bad quantization {q, expected_len, values}")
+        print(f"correcting bad quantization {q, expected_len, values} \n")
         # robust index creation is needed since there is a decent chance that at some point
         # a non-representative w will be passed
         # search for missing values, and impute
         values = impute(values,expected_len)
-
+    else:
+        print(f"good quantization")
     index = values
     index = index.reshape(-1, 1)
 
     # create query table
-
     column_names = list(range(0, lvl+1))
 
     table = np.hstack((index, generate_binary_matrix(lvl)))

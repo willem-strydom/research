@@ -21,7 +21,7 @@ from config import y, grd_lvl
 def quant_logistic(w, Master):
     #y_pred = w.T @ xTr ... now with low access
     y_pred = uniform_query(w, Master)
-    vals = y.reshape(y.shape) * y_pred
+    vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
 
     # then quantize y_i*alpha_i
