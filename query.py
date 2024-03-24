@@ -28,8 +28,8 @@ def query(w, Master, X):
             ans_array.append(response)
         ans_array = np.vstack((ans_array))
 
-        resp = np.sum(ans_array, axis=0)
-        return resp.reshape(1,-1)
+        resp = np.sum(ans_array, axis=0).reshape(1,-1)
+        return resp
 
     # for a querry on the columns... I think just change the order of the loops maybe
     if w.shape[1] == 1:
@@ -42,8 +42,8 @@ def query(w, Master, X):
             ans_array.append(response)
         ans_array = np.vstack(ans_array)
 
-        resp = np.sum(ans_array, axis = 0)
-        return resp.reshape(-1,1)
+        resp = np.sum(ans_array, axis = 0).reshape(-1,1)
+        return resp
 
     """for i in range(1,m):
         query = nodes_array[i].query(w[width*i:width*(i+1)])

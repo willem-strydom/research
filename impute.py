@@ -21,4 +21,6 @@ def impute(values, expected_len):
         for i in range(expected_len - len(values)):
             values = np.append(values, np.array(max_val + d * (i+1)))
 
+    if len(values) != expected_len:
+        raise ValueError(f" returned{values}, but expect  {expected_len}")
     return values

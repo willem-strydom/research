@@ -24,12 +24,13 @@ def quant_logistic(w, Master):
     vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
 
+    func = lambda x: 1 / (1 + np.exp(x))
+    func = np.vectorize(func)
+    vals = func(vals)
+
     # then quantize y_i*alpha_i
     vals = vals*y
     alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
-    gradient = -1 * uniform_query(alpha, Master)/len(y) # change to do the 1,0 scheme
+    gradient = - uniform_query(alpha, Master)/len(y)
     gradient = gradient.reshape(-1,1)
-    #want to find vals.T@X with the low access scheme
-    #gradient = -np.mean(yTr * xTr * alpha, axis = 0).reshape(-1, 1)
-
     return loss, gradient

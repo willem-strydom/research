@@ -13,6 +13,7 @@ def quantize(vals, level, type):
 
     # processing partitions... maybe not a great way to do this
     step = partitions[1] - partitions[0]
+    print(f"range of bins: {partitions[1]}, {partitions[-2]}")
     # remove edge partitions since it should j be +- \infty
     partitions = partitions[1:-1]
     # index for which bin each respective value falls into
@@ -39,3 +40,10 @@ def quantize(vals, level, type):
 
     return beta
 
+# vals = np.random.normal(0,4,200)
+# lvl = 6
+# type = "unif"
+# result = quantize(vals, lvl, type)
+# print(f"number of unique quantizations: {len(np.unique(result))} \n")
+# print(f"range of quantized vals {np.min(result)}, {np.max(result)}")
+# print(f"abs err: {np.mean(np.abs(vals - result))}")

@@ -12,7 +12,7 @@ from master import master
 scaler = MinMaxScaler(feature_range=(-1, 1))
 
 grd_lvl = 3
-w_lvl = 3
-X, y = gen_data(210, 190)  # ends up giving 210 features
+w_lvl = 7
+X, y = gen_data(203, 190)  # ends up giving 210 features
 X = scaler.fit_transform(X)
 y = np.array(y).reshape(-1, 1)

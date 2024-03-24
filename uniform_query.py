@@ -14,6 +14,7 @@ def uniform_query(w, Master):
     """
 
     w_flat = w.flatten()
+    print(w_flat)
     values = np.unique(w_flat)  # More efficient and readable way to get unique values
     d_min = np.min(np.diff(np.sort(values)))  # More efficient calculation of minimum difference
 
@@ -24,13 +25,12 @@ def uniform_query(w, Master):
     q = len(values)
     lvl = 0
     expected_len = 0
-    if w.shape[0] == 1:
+    if w.shape[1] == 1:
         expected_len = 2**w_lvl
         lvl = w_lvl
     else:
         expected_len = 2**grd_lvl
         lvl = grd_lvl
-
     if q != expected_len:
         print(f"correcting bad quantization {q, expected_len, values} \n")
         # robust index creation is needed since there is a decent chance that at some point
