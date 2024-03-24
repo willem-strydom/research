@@ -13,7 +13,6 @@ def quantize(vals, level, type):
 
     # processing partitions... maybe not a great way to do this
     step = partitions[1] - partitions[0]
-    print(f"range of bins: {partitions[1]}, {partitions[-2]}")
     # remove edge partitions since it should j be +- \infty
     partitions = partitions[1:-1]
     # index for which bin each respective value falls into

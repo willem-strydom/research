@@ -14,7 +14,6 @@ def uniform_query(w, Master):
     """
 
     w_flat = w.flatten()
-    print(w_flat)
     values = np.unique(w_flat)  # More efficient and readable way to get unique values
     d_min = np.min(np.diff(np.sort(values)))  # More efficient calculation of minimum difference
 
