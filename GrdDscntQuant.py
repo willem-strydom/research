@@ -1,7 +1,6 @@
 import numpy as np
 from quantize import quantize
-from config import w_lvl
-def grdescentquant(func, w, stepsize, maxiter, Master, tolerance=1e-02):
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance=1e-02):
     """
     :param func: quantlog function
     :param w0: usually uniformly random in {-1,1}^d
@@ -25,7 +24,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, tolerance=1e-02):
     # the loss decreases every iteration
 
     while num_iter < maxiter:
-        loss, gradient = func(w,Master)
+        loss, gradient = func(w, Master, w_lvl, grd_lvl)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient

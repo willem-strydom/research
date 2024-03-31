@@ -2,7 +2,8 @@ import numpy as np
 from quantize import quantize
 from general_query import general_query
 from uniform_query import uniform_query
-from config import y, grd_lvl
+from config import y
+from quant_lvls import grd_lvl
 '''
     INPUT:
     xTr dxn matrix (each column is an input vector)
@@ -18,9 +19,9 @@ from config import y, grd_lvl
 '''
 
 
-def quant_logistic(w, Master):
+def quant_logistic(w, Master, w_lvl, grd_lvl):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = uniform_query(w, Master)
+    y_pred = uniform_query(w, Master, w_lvl)
     vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
 
@@ -31,6 +32,6 @@ def quant_logistic(w, Master):
     # then quantize y_i*alpha_i
     vals = vals*y
     alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
-    gradient = - uniform_query(alpha, Master)/len(y)
+    gradient = - uniform_query(alpha, Master, grd_lvl)/len(y)
     gradient = gradient.reshape(-1,1)
     return loss, gradient

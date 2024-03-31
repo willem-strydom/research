@@ -3,10 +3,11 @@ import numpy as np
 import pandas as pd
 from generate_binary_matrix import generate_binary_matrix
 import math
-from config import X, w_lvl, grd_lvl
+from config import X
+from quant_lvls import w_lvl, grd_lvl
 from impute import impute
 
-def uniform_query(w, Master):
+def uniform_query(w, Master, lvl):
     """
     :param w: query, values are in arithmetic sequence
     :param master: stores data array which is being queried
@@ -20,24 +21,17 @@ def uniform_query(w, Master):
     a = np.min(values)
     d = d_min
 
-    # Construct index for lookup table
-    q = len(values)
-    lvl = 0
-    expected_len = 0
-    if w.shape[1] == 1:
-        expected_len = 2**w_lvl
-        lvl = w_lvl
+    if len(w) == X.shape[1]:
+        expected_len = 2**lvl
+        actual = X @ w
+
     else:
-        expected_len = 2**grd_lvl
-        lvl = grd_lvl
-    if q != expected_len:
-        print(f"correcting bad quantization {q, expected_len, values} \n")
-        # robust index creation is needed since there is a decent chance that at some point
-        # a non-representative w will be passed
-        # search for missing values, and impute
-        values = impute(values,expected_len)
-    else:
-        print(f"good quantization")
+        expected_len = 2**lvl
+        actual = w @ X
+    # robust index creation is needed
+    if len(values) != expected_len:
+        # print(f"correcting bad quantization {q, expected_len, values} \n")
+        values = impute(values, expected_len)
     index = values
     index = index.reshape(-1, 1)
 
@@ -63,11 +57,7 @@ def uniform_query(w, Master):
         response += ((2**(lvl-i-1))*d) * query(query_table.loc[w_flat, i].values.reshape(w.shape), Master, X)
 
     # ensure that query is done correctly
-    actual = 0
-    if w.shape[0] == 1:
-        actual = w@X
-    if w.shape[1] == 1:
-        actual = X@w
+
     if not np.allclose(response.reshape(-1,1), actual.reshape(-1,1), atol = 0.01):
         error = np.linalg.norm(response - actual)
         print("response, actual", np.hstack((response.reshape(-1,1)[0:5], actual.reshape(-1,1)[0:5])),"\n")
