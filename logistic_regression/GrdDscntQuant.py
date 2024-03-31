@@ -1,5 +1,5 @@
 import numpy as np
-from quantize import quantize
+from quantization.quantize import quantize
 def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance=1e-02):
     """
     :param func: quantlog function

@@ -1,9 +1,9 @@
 import numpy as np
-from GrdDscntQuant import grdescentquant
-from quant_logistic import quant_logistic
-from quantize import quantize
+from logistic_regression.GrdDscntQuant import grdescentquant
+from logistic_regression.quant_logistic import quant_logistic
+from quantization.quantize import quantize
 from config import y, X
-from master import master
+from coded_computation.master import master
 
 I = np.eye(7)
 B = np.array([

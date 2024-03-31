@@ -1,11 +1,7 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from GrdDscnt import grdescentnormal
-from GrdDscntQuant import grdescentquant
-from normal_logistic import normallogistic
-from quant_logistic import quant_logistic
-from sklearn.model_selection import train_test_split
+from logistic_regression.GrdDscntQuant import grdescentquant
+from logistic_regression.quant_logistic import quant_logistic
 import time
 
 

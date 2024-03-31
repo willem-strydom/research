@@ -1,5 +1,5 @@
 import numpy as np
-from binning import binning
+from quantization.binning import binning
 
 def quantize(vals, level, type):
     """

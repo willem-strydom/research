@@ -1,14 +1,9 @@
-#main
 import numpy as np
 from master import master
-from query import query
-from decoder import decoder
 
-# writing access in proper way
-# data with more features
-# start thinking about combining both parts
+
 def main():
-    data = np.genfromtxt("framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
+    data = np.genfromtxt("../framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
     a = np.eye(3)
     b = np.ones((3,1))
     G = np.hstack((a,b))
@@ -22,7 +17,7 @@ def main():
 #for real this time
 def hamming():
     from general_decoder import general_decoder
-    data = np.genfromtxt("framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
+    data = np.genfromtxt("../framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
     I = np.eye(7)
     """I = np.where(I == 1, -1, I)
     I = np.where(I == 0, 1, I)""" # pretty sure this makes no sense but should clarify
@@ -51,7 +46,7 @@ def identity():
     """
     test for trivial encoding scheme w/ same params as for hamming code i think
     """
-    data = np.genfromtxt("framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
+    data = np.genfromtxt("../framingham_cleaned_file.csv", dtype=float, comments='#', delimiter=",", skip_header=1)
     G = np.eye(7)
     decoder = {}
     n = 7
@@ -61,9 +56,4 @@ def identity():
     data = np.hstack((data, np.zeros((data.shape[0], 5))))
     m = 3
     nodes_array = master(m, data, decoder, G)
-
-hamming()
-
-
-
-# the decoding of addititional columns is silly... lookup table is for +-1, cannot accomadate 0 cols
+    return 0

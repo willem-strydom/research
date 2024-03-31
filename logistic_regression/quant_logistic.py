@@ -1,9 +1,8 @@
 import numpy as np
-from quantize import quantize
-from general_query import general_query
-from uniform_query import uniform_query
+from quantization.quantize import quantize
+from coded_computation.uniform_query import uniform_query
 from config import y
-from quant_lvls import grd_lvl
+
 '''
     INPUT:
     xTr dxn matrix (each column is an input vector)

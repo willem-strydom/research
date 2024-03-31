@@ -2,9 +2,7 @@ from query import query
 import numpy as np
 import pandas as pd
 from generate_binary_matrix import generate_binary_matrix
-import math
 from config import X
-from quant_lvls import w_lvl, grd_lvl
 from impute import impute
 
 def uniform_query(w, Master, lvl):

@@ -7,7 +7,6 @@ the Master instance, and other stuff here instead of having to pass them around 
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from gen_data import gen_data
-from master import master
 
 scaler = MinMaxScaler(feature_range=(-1, 1))
 
