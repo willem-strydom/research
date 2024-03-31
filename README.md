@@ -19,5 +19,5 @@ This Repository was developed by:
 - **Jinzhao Kang**
 
 # Usage notes
-Project is entirely python, ans requires numpy, and pandas. Matplotlib is used for
-demonstration.
+Project is entirely python, ans requires numpy, and pandas
+Matplotlib is used for demonstration.
