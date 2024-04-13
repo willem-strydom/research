@@ -28,30 +28,24 @@ class node:
 
     def compute_parities(self):
         rows, cols = self.data.shape
-        chunk_size = self.G.shape[0]  # Assuming G is square
-        num_chunks_row = rows // chunk_size
-        num_chunks_col = cols // chunk_size
+        slice_size = self.G.shape[0]
+        num_slices_row = rows // slice_size
+        num_slices_col = cols // slice_size
 
         # Initialize matrices to store row and column parities for each chunk
-        row_parities_matrix = np.empty((num_chunks_row, num_chunks_col), dtype=object)
-        col_parities_matrix = np.empty((num_chunks_row, num_chunks_col), dtype=object)
+        row_parities_matrix = np.empty(num_slices_row, dtype=object)
+        col_parities_matrix = np.empty(num_slices_col, dtype=object)
 
-        for i in range(num_chunks_row):
-            for j in range(num_chunks_col):
-                # Extract the current chunk
-                chunk = self.data[i * chunk_size:(i + 1) * chunk_size, j * chunk_size:(j + 1) * chunk_size]
-
-                # Compute row and column parities for the chunk
-                row_parities = chunk @ self.G
-                col_parities = chunk.T @ self.G
-
-                # Store the computed parities in their respective matrices
-                row_parities_matrix[i, j] = row_parities
-                col_parities_matrix[i, j] = col_parities
+        # row parities
+        for i in range(num_slices_row):
+            row_parities_matrix[i] = self.data[slice_size*i: slice_size*(i+1),:].T@self.G
+        # col parities
+        for j in range(num_slices_col):
+            col_parities_matrix[j] = self.data[:,slice_size*j: slice_size*(j+1)]@self.G
 
         return row_parities_matrix, col_parities_matrix
 
-    def query(self, w: np.ndarray):
+    def query(self, w):
         """
         Compute data@w, or w@data depending on shape of w, either dx1 or 1xd, respectively.
         The method has been updated to work with the new class structure where each
@@ -61,57 +55,44 @@ class node:
         """
         # Determine the size of each chunk
         chunk_size = self.G.shape[0]
-
-        # Determine query type (row vs column) and process accordingly
-        if w.shape[1] == 1:  # col
-            column_response_accumulator = None
-            for j in range(self.col_parities_matrix.shape[1]):
-                row_response_accumulator = []
-                for i in range(self.col_parities_matrix.shape[0]):
-                    low_access_w = self.decoder[tuple(w[chunk_size * i:chunk_size * (i + 1),:].flatten())]
-                    bool_index = np.abs(low_access_w).astype(bool)
-                    chunk_slice = np.hstack(
-                        (self.data[chunk_size * i:chunk_size * (i + 1), chunk_size * j:chunk_size * (j + 1)]
-                         , self.col_parities_matrix[i, j]))
-                    nonzero_low_acc_w = low_access_w[bool_index]
-                    accessed_columns = chunk_slice[:, bool_index]
-                    chunk_response = accessed_columns @ nonzero_low_acc_w
-                    print(chunk_response)
-                    print(self.data[chunk_size * i:chunk_size * (i + 1), chunk_size * j:chunk_size * (j + 1)] @ w[chunk_size * i:chunk_size * (i + 1),:])
-
-                    row_response_accumulator.extend(chunk_response)
-                row_response_accumulator = np.array(row_response_accumulator)
-                if column_response_accumulator is None:
-                    column_response_accumulator = row_response_accumulator
-                else:
-                    column_response_accumulator += row_response_accumulator
-
-            response = np.array(column_response_accumulator).reshape(-1, 1)
-
-        elif w.shape[0] == 1:  # row
-            column_response_accumulator = None
-            for i in range(self.row_parities_matrix.shape[0]):
-                row_response_accumulator = []
-                for j in range(self.row_parities_matrix.shape[1]):
-                    low_access_w = self.decoder[tuple(w[:,chunk_size * i:chunk_size * (i+1)].flatten())]
-                    bool_index = np.abs(low_access_w).astype(bool)
-                    chunk_slice = np.hstack(
-                        (self.data[chunk_size * i:chunk_size * (i + 1), chunk_size * j:chunk_size * (j + 1)].T
-                         , self.row_parities_matrix[i, j]))
-                    nonzero_low_acc_w = low_access_w[bool_index]
-                    accessed_columns = chunk_slice[:,bool_index]
-                    chunk_response = accessed_columns @ nonzero_low_acc_w
-                    row_response_accumulator.extend(chunk_response)
-                row_response_accumulator = np.array(row_response_accumulator)
-                print(row_response_accumulator)
-                if column_response_accumulator is None:
-                    column_response_accumulator = row_response_accumulator
-                else:
-                    column_response_accumulator += row_response_accumulator
+        # partition w, for each partition use the low acc scheme to do the dot product
+        if w.shape[0] == 1:
+            response = np.zeros((1,self.data.shape[1]))
+            num_partitions = int(w.shape[1]/chunk_size)
+            w_partitions = [w[:, chunk_size*i:chunk_size*(i+1)] for i in range(num_partitions)]
+            for i, w_star in enumerate(w_partitions):
+                data_slice = self.data[chunk_size*i:chunk_size*(i+1),:].T
+                parities_slice = self.row_parities_matrix[i]
+                coded_data = np.hstack((data_slice,parities_slice))
+                low_access_w = self.decoder[tuple(w_star.flatten())]
+                boolean_w = np.where(low_access_w != 0 , True, False)
+                accessed_slices = coded_data[:,boolean_w]
+                accessed_w = low_access_w[boolean_w]
+                inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
+                response += inner_prod
+            return response
+        # if column
+        if w.shape[1] == 1:
+            response = np.zeros((self.data.shape[0],1))
+            num_partitions = int(w.shape[0]/chunk_size)
+            w_partitions = [w[chunk_size*i:chunk_size*(i+1),:] for i in range(num_partitions)]
+            for i, w_star in enumerate(w_partitions):
+                data_slice = self.data[:, chunk_size*i:chunk_size*(i+1)]
+                parities_slice = self.col_parities_matrix[i]
+                coded_data = np.hstack((data_slice,parities_slice))
+                #print(f"shape of coded data{coded_data.shape} \n")
+                low_access_w = self.decoder[tuple(w_star.flatten())]
+                boolean_w = np.where(low_access_w != 0 , True, False)
+                accessed_slices = coded_data[:,boolean_w]
+                accessed_w = low_access_w[boolean_w]
+                inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
+                print(f"shape of dot product{inner_prod}")
+                response += inner_prod
+            return response
 
 
-            response = np.array(column_response_accumulator).reshape(1, -1)
-        return response
+
+
 
 # test is query is working alright
 
@@ -126,11 +107,15 @@ decoder = {
     (-1,1):np.array([-1,1,0]),
     (1,-1):np.array([1,-1,0]),
     (1,1):np.array([0,0,1])
-}# Best guess as to what the lookup table should look like...
-node = node(data,decoder,B)
-w = np.array([[-1, -1, 1, 1, 1, 1,1,-1]]).T
-print(node.query(w))
-print(data@w)
+}
+# Best guess as to what the lookup table should look like...
+test_node = node(data,decoder,B)
+print(f"this is the row parity matrix {test_node.row_parities_matrix[0].shape} \n "
+      f"this is the col parity matrix{test_node.col_parities_matrix[0].shape}")
+w = np.array([[-1, -1, 1, 1, 1, 1]])
+print(test_node.query(w))
+print(w@data)
+
 
 # also measure the access
 # also do a distributed storage system which is uncoded
