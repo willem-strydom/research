@@ -1,6 +1,5 @@
 import numpy as np
 
-x = np.array([[1,2],
-              [3,4]])
-print(x)
-print(x[:,[True, False]])
+x = np.random.rand(1,7)
+y = np.random.rand(7,7)
+print((x@y).shape)

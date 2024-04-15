@@ -25,8 +25,13 @@ class node:
 
         # Compute and store parities in separate matrices
         self.row_parities_matrix, self.col_parities_matrix = self.compute_parities()
+        self.row_parity = np.ones((1, self.data.shape[0]))@self.data
+        self.col_parity = self.data@np.ones((self.data.shape[1], 1))
 
     def compute_parities(self):
+        # procedure if there is no encoding
+        if self.decoder == None:
+            return None, None
         rows, cols = self.data.shape
         slice_size = self.G.shape[0]
         num_slices_row = rows // slice_size
@@ -53,6 +58,15 @@ class node:
         :param w: query vector
         :return: Result of the query and number of chunks accessed.
         """
+        # add a line to do the un-coded version?
+        if self.decoder == None:
+            # just do the dot product
+            if w.shape[0] == 1:
+                return (w@self.data).reshape(w.shape)
+            else:
+                return (self.data@w).reshape(w.shape)
+
+
         # Determine the size of each chunk
         chunk_size = self.G.shape[0]
         # partition w, for each partition use the low acc scheme to do the dot product
@@ -80,13 +94,11 @@ class node:
                 data_slice = self.data[:, chunk_size*i:chunk_size*(i+1)]
                 parities_slice = self.col_parities_matrix[i]
                 coded_data = np.hstack((data_slice,parities_slice))
-                #print(f"shape of coded data{coded_data.shape} \n")
                 low_access_w = self.decoder[tuple(w_star.flatten())]
                 boolean_w = np.where(low_access_w != 0 , True, False)
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
-                print(f"shape of dot product{inner_prod}")
                 response += inner_prod
             return response
 
@@ -111,7 +123,9 @@ decoder = {
 # Best guess as to what the lookup table should look like...
 test_node = node(data,decoder,B)
 print(f"this is the row parity matrix {test_node.row_parities_matrix[0].shape} \n "
-      f"this is the col parity matrix{test_node.col_parities_matrix[0].shape}")
+      f"this is the col parity matrix {test_node.col_parities_matrix[0].shape} \n "
+      f"this is the row parity bit {test_node.row_parity} \n"
+      f"this is the col parity bit {test_node.col_parity} \n")
 w = np.array([[-1, -1, 1, 1, 1, 1]])
 print(test_node.query(w))
 print(w@data)
