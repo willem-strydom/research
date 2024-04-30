@@ -20,4 +20,4 @@ This Repository was developed by:
 
 # Usage notes
 Project is entirely python. Requires numpy, and pandas to work.
-Matplotlib is used for demonstration.
+Matplotlib is used for plotting sometimes.

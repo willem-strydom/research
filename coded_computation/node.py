@@ -1,7 +1,7 @@
 # node class
 
 import numpy as np
-
+import csv
 
 class node:
     """
@@ -20,8 +20,9 @@ class node:
         self.G = G
         self.decoder = decoder
         self.data = data
-        if data.shape[0] % G.shape[0] != 0 or data.shape[1] % G.shape[0] != 0:
-            raise ValueError("Data dimensions must be divisible by G.shape[0]")
+        if G is not None:
+            if data.shape[0] % G.shape[0] != 0 or data.shape[1] % G.shape[0] != 0:
+                raise ValueError("Data dimensions must be divisible by G.shape[0]")
 
         # Compute and store parities in separate matrices
         self.row_parities_matrix, self.col_parities_matrix = self.compute_parities()
@@ -62,9 +63,9 @@ class node:
         if self.decoder == None:
             # just do the dot product
             if w.shape[0] == 1:
-                return (w@self.data).reshape(w.shape)
+                return (w@self.data).reshape(1,-1)
             else:
-                return (self.data@w).reshape(w.shape)
+                return (self.data@w).reshape(-1,1)
 
 
         # Determine the size of each chunk
@@ -82,6 +83,7 @@ class node:
                 boolean_w = np.where(low_access_w != 0 , True, False)
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
+                record_access(len(accessed_w))
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
                 response += inner_prod
             return response
@@ -98,9 +100,20 @@ class node:
                 boolean_w = np.where(low_access_w != 0 , True, False)
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
+                # record_access(len(accessed_w))
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
                 response += inner_prod
             return response
+
+
+def record_access(access):
+    filename = 'access_measurements.csv'
+
+    # Open the file in append mode, create if it doesn't exist
+    with open(filename, 'a', newline='') as file:
+        writer = csv.writer(file)
+        # Write the measurement to the CSV file
+        writer.writerow([access])
 
 
 
@@ -108,7 +121,7 @@ class node:
 
 # test is query is working alright
 
-data = np.random.rand(6,8)
+"""data = np.random.rand(6,8)
 
 B = np.array([[1], #parity code... satisfies the closed under compliment bit I think
               [1]
@@ -128,7 +141,7 @@ print(f"this is the row parity matrix {test_node.row_parities_matrix[0].shape} \
       f"this is the col parity bit {test_node.col_parity} \n")
 w = np.array([[-1, -1, 1, 1, 1, 1]])
 print(test_node.query(w))
-print(w@data)
+print(w@data)"""
 
 
 # also measure the access

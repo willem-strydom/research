@@ -1,9 +1,13 @@
 import numpy as np
 def general_decoder(B):
     """
-    Param: B: non-systematic generator matrix of code, should be transposed though
+    Param: B: non-systematic generator matrix of code
     :return: lookup table forcode... should work for any code that is of the form G = [i|B]
     """
+
+    if B is None:
+        return None
+    B = B.T
     all_combinations = np.array(np.meshgrid(*[[-1, 1]] * 7)).T.reshape(-1, 7)  # vectors in rows
     lookup_table = {}
     for v in all_combinations:
@@ -46,5 +50,6 @@ G = np.array([
         [-1,-1,1,1,-1,-1,1],
         [1,1,-1,1,-1,-1,1]
     ])
-table = general_decoder(G)
+table = general_decoder(G.T)
+
 """

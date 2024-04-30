@@ -1,9 +1,8 @@
-from query import query
 import numpy as np
 import pandas as pd
-from generate_binary_matrix import generate_binary_matrix
+from coded_computation.generate_binary_matrix import generate_binary_matrix
 from config import X
-from impute import impute
+from coded_computation.impute import impute
 
 def uniform_query(w, Master, lvl):
     """
@@ -42,9 +41,12 @@ def uniform_query(w, Master, lvl):
 
     # get the correct parity from master
     if w.shape[0] == 1:
-        parity = Master.row_parity
+        parity = np.hstack([node.row_parity for node in Master.nodes_list]).reshape(1,-1)
+        assert np.allclose(parity, Master.row_parity, atol = 1e-5)
     elif w.shape[1] == 1:
-        parity = Master.col_parity
+        parity = np.sum([node.col_parity for node in Master.nodes_list], axis=0)
+        # print(np.hstack((parity, Master.col_parity)))
+        assert np.allclose(parity, Master.col_parity, atol = 1e-5)
 
     # add up responses according to algorithm
 
@@ -52,13 +54,13 @@ def uniform_query(w, Master, lvl):
 
     # Vectorized approach to construct new queries
     for i in range(1,lvl+1):
-        response += ((2**(lvl-i-1))*d) * query(query_table.loc[w_flat, i].values.reshape(w.shape), Master, X)
+        response += ((2**(lvl-i-1))*d) * Master.query(query_table.loc[w_flat, i].values.reshape(w.shape), X)
 
     # ensure that query is done correctly
 
     if not np.allclose(response.reshape(-1,1), actual.reshape(-1,1), atol = 0.01):
         error = np.linalg.norm(response - actual)
-        print("response, actual", np.hstack((response.reshape(-1,1)[0:5], actual.reshape(-1,1)[0:5])),"\n")
+        print("response, actual \n", np.hstack((response.reshape(-1,1)[0:5], actual.reshape(-1,1)[0:5])),"\n")
         raise ValueError(f"query does not work: {error}")
 
     return response

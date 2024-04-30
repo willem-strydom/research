@@ -1,9 +1,10 @@
 import numpy as np
 
-def gen_data(n,d):
+def gen_data(n,d, noise):
     """
     :param n: num examples
     :param d: num indep features... makes int(d/10) dependent features too
+    :param noise: scale param for 0 mean gaussian noise added to labels
     :return: np nd-rray
     """
     # indep features
@@ -17,6 +18,15 @@ def gen_data(n,d):
     dp_features = X @ M
     X = np.hstack((X,dp_features))
 
-    y = np.sign(X@ np.random.normal(0,1,X.shape[1]))
+    w_star = np.random.normal(0,1,X.shape[1])
+
+    y = np.sign((X@ w_star) + np.random.normal(0, noise, X.shape[0]))
 
     return X,y
+
+"""test to see if the noisy label data is actually being done correctly, need to return w though
+X, y, w = gen_data(600,5, 10)
+
+preds = np.sign(X@w)
+print(np.mean(y == preds))
+"""
