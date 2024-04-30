@@ -2,7 +2,7 @@ import numpy as np
 def general_decoder(B):
     """
     Param: B: non-systematic generator matrix of code
-    :return: lookup table forcode... should work for any code that is of the form G = [i|B]
+    :return: lookup table for code... should work for any code that is of the form G = [i|B]
     """
 
     if B is None:
