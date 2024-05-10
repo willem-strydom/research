@@ -7,6 +7,7 @@ from quantization.quantize import quantize
 from config import y, X, y_test, X_test
 from coded_computation.master import master
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def get_loss(w,X,y):
     #calculates 1-0 prediction error
@@ -47,8 +48,7 @@ repetitions = 10
 for i in range(repetitions):
     for w_lvl in range(3, 8):
         for grd_lvl in range(1, 5):
-
-            # Your existing logic for calculations
+            # logic for calculations
             w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
             w0 = quantize(w0, w_lvl, "unif")
 

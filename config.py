@@ -2,6 +2,7 @@
 config file: never actually used one of these before,
 but I thought it might make it easier to have global variables like
 the Master instance, and other stuff here instead of having to pass them around between files...
+maybe not a good way to do this though.
 """
 
 import numpy as np

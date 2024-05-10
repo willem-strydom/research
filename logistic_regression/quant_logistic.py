@@ -1,7 +1,10 @@
 import numpy as np
+import pandas as pd
+
 from quantization.quantize import quantize
 from coded_computation.uniform_query import uniform_query
 from config import y
+import csv
 
 '''
     INPUT:
@@ -18,19 +21,44 @@ from config import y
 '''
 
 
-def quant_logistic(w, Master, w_lvl, grd_lvl):
+def quant_logistic(w, Master, w_lvl, grd_lvl, dict):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = uniform_query(w, Master, w_lvl)
+    y_pred = uniform_query(w, Master, w_lvl, dict)
     vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
+    record_access(dict)
 
     func = lambda x: 1 / (1 + np.exp(x))
     func = np.vectorize(func)
     vals = func(vals)
 
     # then quantize y_i*alpha_i
+    # rest dict
+    dict = {
+        'w-quantization': [w_lvl],
+        'grd-quantization': [grd_lvl],
+        'imputation': [0],
+        'access': 0,
+        'query type': [0],
+        'time': [0],
+        'stop cond': [0],
+        'iters': [0]
+
+    }
     vals = vals*y
     alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
-    gradient = - uniform_query(alpha, Master, grd_lvl)/len(y)
+    gradient = - uniform_query(alpha, Master, grd_lvl, dict)/len(y)
+    record_access(dict)
     gradient = gradient.reshape(-1,1)
     return loss, gradient
+
+
+
+def record_access(dict):
+    filename = 'access_measurements.csv'
+
+    # Open the file in append mode, create if it doesn't exist
+
+    df = pd.DataFrame(dict)
+    df.to_csv(filename, mode='a', index=False, header=False)
+

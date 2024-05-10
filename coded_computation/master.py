@@ -16,7 +16,7 @@ class master:
         self.col_parity = (data@np.ones(data.shape[1])).reshape(-1,1)
         self.row_parity = (np.ones(data.shape[0])@data).reshape(1,-1)
 
-    def query(self, w, X):
+    def query(self, w, X, dict):
         """
         :param w: query on RAW data in {-1,1}^n
         :param nodes_array: the storage nodes from master in an mxn array
@@ -33,7 +33,7 @@ class master:
         if w.shape[0] == 1:
             ans = [] # list to append responses to
             for node in self.nodes_list:
-                ans.extend(node.query(w).flatten())
+                ans.extend(node.query(w, dict).flatten())
 
             ans = np.array(ans).reshape(1,-1)
 
@@ -48,8 +48,8 @@ class master:
             width = self.width  # the amount of data at each node in general... may differ for final node
             ans = np.zeros((self.nodes_list[0].data.shape[0], 1))
             for i, node in enumerate(self.nodes_list[:-1]):
-                ans += node.query(w[i*width: width*(i+1),:])
-            ans += self.nodes_list[-1].query(w[width*(len(self.nodes_list)-1):,:])
+                ans += node.query(w[i*width: width*(i+1),:], dict)
+            ans += self.nodes_list[-1].query(w[width*(len(self.nodes_list)-1):,:], dict)
 
             expected = X @ w
             if not np.allclose(ans, expected):

@@ -21,3 +21,7 @@ This Repository was developed by:
 # Usage notes
 Project is entirely python. Requires numpy, and pandas to work.
 Matplotlib is used for plotting sometimes.
+
+# to do...
+do a run of the test alg, but add back the func to record the access node by node, 
+so that we can make plots and stuff.

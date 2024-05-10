@@ -4,7 +4,7 @@ from coded_computation.generate_binary_matrix import generate_binary_matrix
 from config import X
 from coded_computation.impute import impute
 
-def uniform_query(w, Master, lvl):
+def uniform_query(w, Master, lvl, dict):
     """
     :param w: query, values are in arithmetic sequence
     :param master: stores data array which is being queried
@@ -21,14 +21,16 @@ def uniform_query(w, Master, lvl):
     if len(w) == X.shape[1]:
         expected_len = 2**lvl
         actual = X @ w
+        dict['query type'] = ['w']
 
     else:
         expected_len = 2**lvl
         actual = w @ X
+        dict['query type'] = ['grd']
     # robust index creation is needed
     if len(values) != expected_len:
         # print(f"correcting bad quantization {q, expected_len, values} \n")
-        values = impute(values, expected_len)
+        values = impute(values, expected_len, dict)
     index = values
     index = index.reshape(-1, 1)
 
@@ -54,7 +56,7 @@ def uniform_query(w, Master, lvl):
 
     # Vectorized approach to construct new queries
     for i in range(1,lvl+1):
-        response += ((2**(lvl-i-1))*d) * Master.query(query_table.loc[w_flat, i].values.reshape(w.shape), X)
+        response += ((2**(lvl-i-1))*d) * Master.query(query_table.loc[w_flat, i].values.reshape(w.shape), X , dict)
 
     # ensure that query is done correctly
 

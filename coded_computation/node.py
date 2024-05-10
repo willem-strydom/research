@@ -51,7 +51,7 @@ class node:
 
         return row_parities_matrix, col_parities_matrix
 
-    def query(self, w):
+    def query(self, w, dict):
         """
         Compute data@w, or w@data depending on shape of w, either dx1 or 1xd, respectively.
         The method has been updated to work with the new class structure where each
@@ -83,7 +83,7 @@ class node:
                 boolean_w = np.where(low_access_w != 0 , True, False)
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
-                record_access(len(accessed_w))
+                dict['access'] += len(accessed_w)
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
                 response += inner_prod
             return response
@@ -100,20 +100,13 @@ class node:
                 boolean_w = np.where(low_access_w != 0 , True, False)
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
-                # record_access(len(accessed_w))
+                dict['access'] += len(accessed_w)
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
                 response += inner_prod
             return response
 
 
-def record_access(access):
-    filename = 'access_measurements.csv'
 
-    # Open the file in append mode, create if it doesn't exist
-    with open(filename, 'a', newline='') as file:
-        writer = csv.writer(file)
-        # Write the measurement to the CSV file
-        writer.writerow([access])
 
 
 

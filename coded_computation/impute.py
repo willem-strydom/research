@@ -1,15 +1,17 @@
 import numpy as np
 
-def impute(values, expected_len):
+def impute(values, expected_len, dict):
     """
     :param values: arithmetic sequence with missing values
     :param expected_len: expect number of vals
     :return: an ordered sequence of length expected_len
     """
     recieved_vals = values.copy()
+    dict['imputation'] = [expected_len - len(recieved_vals)]
     d_min = np.min(np.diff(np.sort(values)))
     a = np.min(values)
     d = d_min
+    expected_array = np.arange(a, a + expected_len * d, d)
     for i in range(expected_len - 1):
         if i == len(values) or len(values) == expected_len:
             break
@@ -27,6 +29,8 @@ def impute(values, expected_len):
         raise ValueError(f" returned{values}, {len(values)}, but expected  {expected_len}, and received {recieved_vals}")
     if not all(elem in values for elem in recieved_vals):
         raise ValueError(f" returned incomplete list ")
+    if not np.allclose(expected_array , values, atol = 1e-4):
+        raise ValueError(f" bad index: expected {expected_array}, got {values}")
     return values
 
 """
