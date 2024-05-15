@@ -7,6 +7,11 @@ from coded_computation.general_decoder import general_decoder
 class master:
 
     def __init__(self, data, G, coded_slices_per_node):
+        """
+        :param data: np n by d array. n and d should be divisible by g.shape[0]
+        :param G: non-systematic part of the generator matrix for given code
+        :param coded_slices_per_node: number of coded columns stored at each node
+        """
         if G is not None:
             self.width = G.shape[0] * coded_slices_per_node
         else:

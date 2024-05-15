@@ -42,14 +42,14 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
-            stepsize = (stepsize / 1.01) * 0.5
+            stepsize = stepsize * 0.8
             w = w - stepsize * prior_gradient
         else:
             if num_iter < 10:
                 stepsize = stepsize * 1.1
                 w = w - stepsize * gradient
             else:
-                stepsize = stepsize * 1.01
+                stepsize = stepsize * 1.1
                 w = w - stepsize * gradient
         if stepsize < eps:
             stopcond = 1

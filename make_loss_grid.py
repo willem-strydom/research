@@ -44,7 +44,7 @@ w, num_iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, X.T, y.T, 
 normal_loss = get_loss(w, X, y)
 print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations")
 
-repetitions = 10
+repetitions = 100
 for i in range(repetitions):
     for w_lvl in range(3, 8):
         for grd_lvl in range(1, 5):

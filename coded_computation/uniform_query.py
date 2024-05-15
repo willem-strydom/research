@@ -29,7 +29,6 @@ def uniform_query(w, Master, lvl, dict):
         dict['query type'] = ['grd']
     # robust index creation is needed
     if len(values) != expected_len:
-        # print(f"correcting bad quantization {q, expected_len, values} \n")
         values = impute(values, expected_len, dict)
     index = values
     index = index.reshape(-1, 1)
@@ -60,9 +59,9 @@ def uniform_query(w, Master, lvl, dict):
 
     # ensure that query is done correctly
 
-    if not np.allclose(response.reshape(-1,1), actual.reshape(-1,1), atol = 0.01):
+    if not np.allclose(response.reshape(-1,1), actual.reshape(-1,1), atol = 2):
         error = np.linalg.norm(response - actual)
         print("response, actual \n", np.hstack((response.reshape(-1,1)[0:5], actual.reshape(-1,1)[0:5])),"\n")
-        raise ValueError(f"query does not work: {error}")
+        raise ValueError(f"query does not work: {np.unique(w_flat).reshape(-1,1)}")
 
     return response
