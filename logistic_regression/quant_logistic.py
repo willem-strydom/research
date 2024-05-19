@@ -56,7 +56,6 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict):
 
 def record_access(dict):
     filename = 'access_measurements.csv'
-
     # Open the file in append mode, create if it doesn't exist
 
     df = pd.DataFrame(dict)

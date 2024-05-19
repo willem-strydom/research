@@ -1,7 +1,8 @@
 import numpy as np
 
 
-def grdescentnormal(func, w0, stepsize, maxiter, xTr, yTr, tolerance=1e-02):
+
+def grdescentnormal(func, w0, stepsize, maxiter, Master, yTr, tolerance=1e-02):
     # INPUT:
     # func function to minimize
     # w_trained = initial weight vector
@@ -25,7 +26,7 @@ def grdescentnormal(func, w0, stepsize, maxiter, xTr, yTr, tolerance=1e-02):
     # also undo the last update in that case to make sure
     # the loss decreases every iteration
     while num_iter < maxiter:
-        loss, gradient = func(w, xTr, yTr)
+        loss, gradient = func(w, Master, yTr)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient

@@ -23,7 +23,7 @@ class master:
 
     def query(self, w, X, dict):
         """
-        :param w: query on RAW data in {-1,1}^n
+        :param w: query on RAW data in {-1,1}^n, or any w for uncoded system
         :param nodes_array: the storage nodes from master in an mxn array
         :return: np.dot(w,data) but like with low access
         """
