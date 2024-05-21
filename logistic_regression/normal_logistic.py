@@ -1,6 +1,6 @@
-import math
+
 import numpy as np
-from config import X
+
 
 '''
 
@@ -16,7 +16,7 @@ from config import X
 
     [n,d]=size(xTr);
 '''
-def normallogistic(w, Master,yTr):
+def normallogistic(w, Master,yTr, X):
     """y_pred = w.T @ xTr
     loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
     num = yTr * xTr
@@ -27,7 +27,7 @@ def normallogistic(w, Master,yTr):
     loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
     den = (1 + np.exp(yTr * y_pred))
     alpha = yTr / den
-    gradient = - Master.query(alpha.reshape(1,-1), X, dictionary).reshape(-1,1)/len(yTr)
+    gradient = - Master.query(alpha.reshape(1, -1), X, dictionary).reshape(-1, 1)/len(yTr)
 
     """y_pred = X @ w
     num = X * yTr

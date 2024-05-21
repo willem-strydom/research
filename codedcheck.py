@@ -23,3 +23,4 @@ stepsize = 0.1
 w, num_iters = grdescentuncoded(uncoded_logistic, w0, stepsize, maxiter, Master, 8, 4, tolerance=1e-02)
 normal_loss = get_loss(w, X, y)
 print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations")
+

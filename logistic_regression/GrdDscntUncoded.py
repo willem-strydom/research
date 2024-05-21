@@ -2,7 +2,7 @@ import numpy as np
 from quantization.quantize import quantize
 import pandas as pd
 import time
-def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance=1e-02):
+def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, tolerance=1e-02):
     """
     :param func: quantlog function
     :param w0: usually uniformly random in {-1,1}^d
@@ -25,7 +25,6 @@ def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, toleran
     # also undo the last update in that case to make sure
     # the loss decreases every iteration
     stopcond = 0
-    start_time = time.time()
     while num_iter < maxiter:
         dict = {
                 'w-quantization': [w_lvl],
@@ -38,7 +37,7 @@ def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, toleran
                 'iters': [0]
 
             } # for data collection I think
-        loss, gradient = func(w, Master, grd_lvl)
+        loss, gradient = func(w, Master, grd_lvl, X, y)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -65,8 +64,6 @@ def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, toleran
         prior_loss = loss
         prior_gradient = gradient.copy()
         num_iter += 1
-    end_time = time.time()
-    t = end_time - start_time
 
 
     return w, num_iter

@@ -26,7 +26,7 @@ y = np.array(y).reshape(-1, 1)[:700]
 
 data = arff.loadarff('/Users/willem/Downloads/php3isjYz.arff')
 df = pd.DataFrame(data[0])
-hill_train_x, hill_test_x, hill_train_y, hill_test_y = clean_and_scale(df)
+hill_train_x, hill_test_x, hill_train_y, hill_test_y = clean_and_scale(df, "Class")
 
 hill_train_x, hill_train_y = pad(hill_train_x, hill_train_y, 7)
 

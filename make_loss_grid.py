@@ -39,11 +39,12 @@ test_loss = np.zeros((5, 4))
 maxiter = 10000
 stepsize = 0.1
 w0 = np.random.uniform(-1, 1, (hill_train_x.shape[1], 1))
-w, num_iters = w, num_iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, Master, hill_train_y, tolerance=1e-02)
+w, num_iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, Master, hill_train_y, tolerance=1e-02)
 normal_loss = get_loss(w, hill_test_x, hill_test_y)
 print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations")
 
 repetitions = 100
+func = quant_logistic
 for i in range(repetitions):
     for w_lvl in range(3, 8):
         for grd_lvl in range(1, 5):

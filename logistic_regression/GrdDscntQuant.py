@@ -2,7 +2,8 @@ import numpy as np
 from quantization.quantize import quantize
 import pandas as pd
 import time
-def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance=1e-02):
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance = 1e-02):
+
     """
     :param func: quantlog function
     :param w0: usually uniformly random in {-1,1}^d
@@ -38,7 +39,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance
                 'iters': [0]
 
             } # for data collection I think
-        loss, gradient = func(w, Master, w_lvl, grd_lvl, dict)
+        loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -78,12 +79,11 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, tolerance
         'iters': [num_iter]
 
     }
-    record_access(dict)
+    record_access(dict, filename)
 
     return w, num_iter
 
-def record_access(dict):
-    filename = 'access_measurements.csv'
+def record_access(dict, filename):
 
     df = pd.DataFrame(dict)
     df.to_csv(filename, mode='a', index=False, header=False)

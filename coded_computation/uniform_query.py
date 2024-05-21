@@ -1,16 +1,14 @@
 import numpy as np
 import pandas as pd
 from coded_computation.generate_binary_matrix import generate_binary_matrix
-from config import X
 from coded_computation.impute import impute
 
-def uniform_query(w, Master, lvl, dict):
+def uniform_query(w, Master, lvl, dict, X):
     """
     :param w: query, values are from an arithmetic sequence, potentially incomplete
     :param master: stores data array which is being queried
     :return: <data,w> or <w,data>
     """
-
     w_flat = w.flatten()
     values = np.unique(w_flat)
     d_min = np.min(np.diff(np.sort(values)))  # calculation of minimum difference

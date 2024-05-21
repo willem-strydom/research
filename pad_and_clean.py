@@ -13,12 +13,12 @@ print(df.head())
 print(df.info())
 print(df.describe())
 """
-def clean_and_scale(df):
+def clean_and_scale(df, target):
     # Handle missing values
     df.dropna(inplace=True)
 
     # Convert categorical variables
-    categorical_columns = df.select_dtypes(include=['object']).columns
+    categorical_columns = df.select_dtypes(include=['object', 'category']).columns
     for col in categorical_columns:
         df[col] = df[col].apply(lambda x: x.decode('utf-8'))  # Decode byte strings
         if df[col].nunique() == 2:  # Binary categorical variable
@@ -28,13 +28,13 @@ def clean_and_scale(df):
 
     # Feature scaling
     scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(df.drop('Class', axis=1))
-    df_scaled = pd.DataFrame(scaled_features, columns=df.drop('Class', axis=1).columns)
-    df_scaled['Class'] = df['Class'].values
+    scaled_features = scaler.fit_transform(df.drop(target, axis=1))
+    df_scaled = pd.DataFrame(scaled_features, columns=df.drop(target, axis=1).columns)
+    df_scaled[target] = df[target].values
 
     # Split data into features and target
-    X = df_scaled.drop('Class', axis=1)
-    y = df_scaled['Class']
+    X = df_scaled.drop(target, axis=1)
+    y = df_scaled[target]
     y = np.where(y == y[0], -1, 1)
 
     # Train-test split
@@ -43,7 +43,10 @@ def clean_and_scale(df):
     return X_train, X_test, y_train, y_test
 
 def pad(X, y, desired_divisor):
-    X = X.to_numpy()
+
+    if isinstance(X, pd.DataFrame):
+        X = X.to_numpy()
+    y = y.flatten()
     # Calculate rows to add
     current_rows = X.shape[0]
     rows_to_add = (desired_divisor - (current_rows % desired_divisor)) % desired_divisor
@@ -68,7 +71,7 @@ def pad(X, y, desired_divisor):
         padding_columns = np.zeros((X_padded.shape[0], columns_to_add))
         X_padded = np.hstack([X_padded, padding_columns])
 
-    return X_padded, y_padded
+    return X_padded, y_padded.reshape(-1,1)
 """
 
 data = arff.loadarff('/Users/willem/Downloads/php3isjYz.arff')
@@ -82,3 +85,32 @@ hill_test_x, hill_test_y = pad(hill_test_x, hill_test_y, 7)
 print(hill_train_x.shape, hill_train_y.shape, hill_test_x.shape, hill_test_y.shape)
 
 """
+"""
+data = arff.loadarff('/Users/willem/Downloads/speeddating.arff')
+df = pd.DataFrame(data[0])
+
+hill_train_x, hill_test_x, hill_train_y, hill_test_y = clean_and_scale(df, "match")
+
+print(hill_train_x.shape, hill_train_y.shape, hill_test_x.shape, hill_test_y.shape)
+hill_train_x, hill_train_y = pad(hill_train_x, hill_train_y, 7)
+
+hill_test_x, hill_test_y = pad(hill_test_x, hill_test_y, 7)
+print(hill_train_x.shape, hill_train_y.shape, hill_test_x.shape, hill_test_y.shape)
+
+"""
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+# Example data
+X = np.random.rand(500, 45)
+y = np.random.rand(500, 1)
+
+# Print original shapes
+print(X.shape, y.shape)
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Print shapes after the split
+print(X_train.shape, y_train.shape)
+print(X_test.shape, y_test.shape)

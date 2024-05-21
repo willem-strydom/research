@@ -17,7 +17,7 @@ from config import X, y
 '''
 
 
-def uncoded_logistic(w, Master, grd_lvl):
+def uncoded_logistic(w, Master, grd_lvl, X, y):
     dictionary = {}
     y_pred = Master.query(w, X, dictionary)
 

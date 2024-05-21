@@ -3,7 +3,6 @@ import pandas as pd
 
 from quantization.quantize import quantize
 from coded_computation.uniform_query import uniform_query
-from config import y
 import csv
 
 '''
@@ -21,12 +20,12 @@ import csv
 '''
 
 
-def quant_logistic(w, Master, w_lvl, grd_lvl, dict):
+def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = uniform_query(w, Master, w_lvl, dict)
+    y_pred = uniform_query(w, Master, w_lvl, dict, X)
     vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
-    record_access(dict)
+    record_access(dict, filename)
 
     func = lambda x: 1 / (1 + np.exp(x))
     func = np.vectorize(func)
@@ -47,16 +46,14 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict):
     }
     vals = vals*y
     alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
-    gradient = - uniform_query(alpha, Master, grd_lvl, dict)/len(y)
-    record_access(dict)
+    gradient = - uniform_query(alpha, Master, grd_lvl, dict, X)/len(y)
+    record_access(dict, filename)
     gradient = gradient.reshape(-1,1)
     return loss, gradient
 
 
 
-def record_access(dict):
-    filename = 'access_measurements.csv'
-    # Open the file in append mode, create if it doesn't exist
+def record_access(dict, filename):
 
     df = pd.DataFrame(dict)
     df.to_csv(filename, mode='a', index=False, header=False)
