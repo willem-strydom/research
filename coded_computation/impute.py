@@ -34,7 +34,7 @@ def impute(values, expected_len, dict):
     if not all(elem in expected_index for elem in values):
         raise ValueError(f" returned incomplete list")
     if not is_approx_arithmetic_sequence(expected_index, tolerance=1e-6):
-        raise ValueError(f" did not return arithmetic sequence: {expected_index}")
+        raise ValueError(f" did not return arithmetic sequence: {expected_index}, from vlaues {values}")
 
     return np.array(expected_index)
 """
