@@ -2,7 +2,7 @@ import numpy as np
 from quantization.quantize import quantize
 import pandas as pd
 import time
-def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance = 1e-02):
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance):
 
     """
     :param func: quantlog function
