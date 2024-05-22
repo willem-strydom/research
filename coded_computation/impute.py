@@ -1,6 +1,22 @@
 import numpy as np
 
+
+def is_approx_arithmetic_sequence(seq, tolerance=1e-6):
+    # check to make sure that the returned index is approximately an arithmetic sequence
+    if len(seq) < 2:
+        return False
+
+    # Calculate the common difference
+    common_diff = seq[1] - seq[0]
+
+    for i in range(2, len(seq)):
+        current_diff = seq[i] - seq[i - 1]
+        if abs(current_diff - common_diff) > tolerance:
+            return False
+
+    return True
 def impute(values, expected_len, dict):
+    # fill in missing values to create index which can be used to make a lookup table
     dict['imputation'] = [expected_len - len(values)]
     d_min = np.min(np.diff(np.sort(values)))
     a = np.min(values)
@@ -16,7 +32,10 @@ def impute(values, expected_len, dict):
     if len(expected_index) != expected_len:
         raise ValueError(f" returned {len(expected_index)}, but expected  {expected_len}")
     if not all(elem in expected_index for elem in values):
-        raise ValueError(f" returned incomplete list ")
+        raise ValueError(f" returned incomplete list")
+    if not is_approx_arithmetic_sequence(expected_index, tolerance=1e-6):
+        raise ValueError(f" did not return arithmetic sequence: {expected_index}")
+
     return np.array(expected_index)
 """
 dict = {}
