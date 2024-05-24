@@ -22,6 +22,7 @@ def impute(values, expected_len, dict):
     a = np.min(values)
     d = d_min
     expected_index = np.linspace(a, a + (expected_len-1) * d, num=expected_len).tolist()
+    print(expected_index)
     assert(len(expected_index) == expected_len)
     for val in values:
         # Find the closest number in list2
@@ -37,6 +38,13 @@ def impute(values, expected_len, dict):
         raise ValueError(f" did not return arithmetic sequence: {expected_index}, from vlaues {values}")
 
     return np.array(expected_index)
+
+# example bad query which breaks the imputation function
+"""
+returned = [-0.39909525433607673, 0.03051861382428145, 0.46013248198463963, 0.9971498171850873, 1.319360218305356, 1.7489740864657142, 2.1785879546260727, 2.6082018227864308, 3.037815690946789, 3.467429559107147, 3.897043427267505, 4.3266572954278635, 4.756271163588222, 5.18588503174858, 5.615498899908938, 6.045112768069296]
+vals = [-0.39909525,  0.03051861,  0.99714982]
+dictionary = {}
+impute(vals, len(returned), dictionary)"""
 """
 dict = {}
 vals = [-0.70817232, -0.47939688, -0.42855789, -0.37771891, -0.35229941, -0.31417017,
