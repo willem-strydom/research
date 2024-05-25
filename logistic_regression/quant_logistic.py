@@ -45,7 +45,7 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
 
     }
     vals = vals*y
-    alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
+    alpha, index = quantize(vals, grd_lvl, "unif").reshape(1,-1)
     gradient = - Master.uniform_query(alpha, grd_lvl, dict, X, index)/len(y)
     record_access(dict, filename)
     gradient = gradient.reshape(-1,1)
