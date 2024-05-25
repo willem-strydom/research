@@ -56,7 +56,7 @@ def grdescentuncoded(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, t
         if np.linalg.norm(gradient) < tolerance:
             stopcond = 2
             break
-        w, index = quantize(w, w_lvl, "unif").reshape(-1, 1)
+        w, index = quantize(w, w_lvl, "unif")
         if np.array_equal(gradient,prior_gradient):
             stopcond = 3
             num_iter +=1
