@@ -44,7 +44,6 @@ def uniform_query(w, Master, lvl, dict, X):
         assert np.allclose(parity, Master.row_parity, atol = 1e-5)
     elif w.shape[1] == 1:
         parity = np.sum([node.col_parity for node in Master.nodes_list], axis=0)
-        # print(np.hstack((parity, Master.col_parity)))
         assert np.allclose(parity, Master.col_parity, atol = 1e-5)
 
     # add up responses according to algorithm

@@ -20,9 +20,9 @@ import csv
 '''
 
 
-def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename):
+def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
     #y_pred = w.T @ xTr ... now with low access
-    y_pred = uniform_query(w, Master, w_lvl, dict, X)
+    y_pred = Master.uniform_query(w, w_lvl, dict, X, index)
     vals = y * y_pred
     loss = np.mean(np.log(1 + np.exp(-vals)))
     record_access(dict, filename)
@@ -46,7 +46,7 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename):
     }
     vals = vals*y
     alpha = quantize(vals, grd_lvl, "unif").reshape(1,-1)
-    gradient = - uniform_query(alpha, Master, grd_lvl, dict, X)/len(y)
+    gradient = - Master.uniform_query(alpha, grd_lvl, dict, X, index)/len(y)
     record_access(dict, filename)
     gradient = gradient.reshape(-1,1)
     return loss, gradient

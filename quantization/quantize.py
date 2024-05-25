@@ -18,31 +18,38 @@ def quantize(vals, level, type):
     # index for which bin each respective value falls into
     alpha = np.digitize(vals, partitions).flatten()
     # map them to appropriate values based on the mean of func evaluation of the respective bin edges
-
+    print(min(partitions), max(partitions))
     beta = np.zeros(alpha.shape)
-    N = len(partitions)
+    arith_seq = [(partitions[0] + partitions[0] - step) / 2]
+    for i in range(1, len(partitions)):
+        arith_seq.append(
+            (partitions[i] + partitions[i-1])/2
+                          )
+    arith_seq.append(
+        (partitions[-1] + partitions[-1] + step) / 2
+    )
+    print(len(arith_seq))
     i = 0
-    for a in alpha:
 
-        # edge cases: there is not a partition edge for the tails,
-        # but digitize will not work correctly if we add the tail bins before
-        # calling it,
-        # so just calculate what the bin edge would be for the values which fall in the tails
-        if a == 0:
-            beta[i] = (partitions[0] + partitions[0] - step)/2
-        elif a == N:
-            beta[i] = (partitions[-1] + partitions[-1] + step)/2
-        # in general
-        else:
-            beta[i] = ((partitions[a - 1]) + (partitions[a]))/2
+    for a in alpha:
+        beta[i] = arith_seq[a]
         i += 1
 
-    return beta
+    return beta, arith_seq
+# some checks and testing
+vals = np.random.normal(0,4,200)
+lvl = 9
+type = "unif"
+result, seq = quantize(vals, lvl, type)
+print(f"number of unique quantizations: {len(np.unique(result))} \n")
+print(f"range of quantized vals {np.min(result)}, {np.max(result)}")
+print(f"range of unquantized vals {np.min(vals)}, {np.max(vals)}")
+print(f"abs err: {np.mean(np.abs(vals - result))}")
+feasible = (np.max(result) - np.min(result))/ 2**lvl
+print(f"feasible error: {feasible}")
+print(f" number of bad quantizations {np.sum(np.abs(vals - result) > feasible)}")
 
-# vals = np.random.normal(0,4,200)
-# lvl = 6
-# type = "unif"
-# result = quantize(vals, lvl, type)
-# print(f"number of unique quantizations: {len(np.unique(result))} \n")
-# print(f"range of quantized vals {np.min(result)}, {np.max(result)}")
-# print(f"abs err: {np.mean(np.abs(vals - result))}")
+set1 = set(result)
+set2 = set(seq)
+print(set1.issubset(set2))
+

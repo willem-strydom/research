@@ -39,7 +39,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
                 'iters': [0]
 
             } # for data collection I think
-        loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename)
+        loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
@@ -58,7 +58,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         if np.linalg.norm(gradient) < tolerance:
             stopcond = 2
             break
-        w = quantize(w, w_lvl, "unif").reshape(-1, 1)
+        w, index = quantize(w, w_lvl, "unif").reshape(-1, 1)
         if np.array_equal(gradient,prior_gradient):
             stopcond = 3
             num_iter +=1
