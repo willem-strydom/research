@@ -3,7 +3,7 @@ from quantization.binning import binning
 
 def quantize(vals, level, type):
     """
-    :param vals: numpy nx1 array of func arguments that will be quantized
+    :param vals: numpy nx1 or 1xn array of func arguments that will be quantized
     :param level: int: log2 number of bins/quantization levels
     :return: nx1 numpy array of quantized values
     """
@@ -35,7 +35,7 @@ def quantize(vals, level, type):
         beta[i] = arith_seq[a]
         i += 1
 
-    return beta, arith_seq
+    return beta.reshape(vals.shape), arith_seq
 # some checks and testing
 """vals = np.random.normal(0,4,200)
 lvl = 9

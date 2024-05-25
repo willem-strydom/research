@@ -28,7 +28,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     stopcond = 0
     start_time = time.time()
     while num_iter < maxiter:
-        w, index = quantize(w, w_lvl, "unif").reshape(-1, 1)
+        w, index = quantize(w, w_lvl, "unif")
         dict = {
                 'w-quantization': [w_lvl],
                 'grd-quantization': [grd_lvl],
