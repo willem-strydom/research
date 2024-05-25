@@ -37,7 +37,7 @@ def quantize(vals, level, type):
 
     return beta, arith_seq
 # some checks and testing
-vals = np.random.normal(0,4,200)
+"""vals = np.random.normal(0,4,200)
 lvl = 9
 type = "unif"
 result, seq = quantize(vals, lvl, type)
@@ -51,5 +51,5 @@ print(f" number of bad quantizations {np.sum(np.abs(vals - result) > feasible)}"
 
 set1 = set(result)
 set2 = set(seq)
-print(set1.issubset(set2))
+print(set1.issubset(set2))"""
 

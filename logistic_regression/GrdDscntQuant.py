@@ -28,6 +28,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     stopcond = 0
     start_time = time.time()
     while num_iter < maxiter:
+        w, index = quantize(w, w_lvl, "unif").reshape(-1, 1)
         dict = {
                 'w-quantization': [w_lvl],
                 'grd-quantization': [grd_lvl],
@@ -58,7 +59,6 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         if np.linalg.norm(gradient) < tolerance:
             stopcond = 2
             break
-        w, index = quantize(w, w_lvl, "unif").reshape(-1, 1)
         if np.array_equal(gradient,prior_gradient):
             stopcond = 3
             num_iter +=1
