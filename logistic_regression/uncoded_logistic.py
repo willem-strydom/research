@@ -31,6 +31,7 @@ def uncoded_logistic(w, Master, grd_lvl, X, y):
     # then quantize y_i*alpha_i
     vals = vals*y
     alpha, index = quantize(vals, grd_lvl, "unif")
+    alpha = alpha.reshape(1,-1)
     gradient = - Master.query(alpha, X, dictionary)/len(y)
     gradient = gradient.reshape(-1,1)
     return loss, gradient
