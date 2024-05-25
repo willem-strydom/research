@@ -35,7 +35,7 @@ def quantize(vals, level, type):
         beta[i] = arith_seq[a]
         i += 1
 
-    return beta.reshape(vals.shape), arith_seq.reshape(-1,1)
+    return beta.reshape(vals.shape), np.array(arith_seq).reshape(-1,1)
 # some checks and testing
 """vals = np.random.normal(0,4,200)
 lvl = 9
