@@ -18,7 +18,6 @@ def quantize(vals, level, type):
     # index for which bin each respective value falls into
     alpha = np.digitize(vals, partitions).flatten()
     # map them to appropriate values based on the mean of func evaluation of the respective bin edges
-    print(min(partitions), max(partitions))
     beta = np.zeros(alpha.shape)
     arith_seq = [(partitions[0] + partitions[0] - step) / 2]
     for i in range(1, len(partitions)):
@@ -28,7 +27,6 @@ def quantize(vals, level, type):
     arith_seq.append(
         (partitions[-1] + partitions[-1] + step) / 2
     )
-    print(len(arith_seq))
     i = 0
 
     for a in alpha:
