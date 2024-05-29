@@ -1,5 +1,6 @@
 import numpy as np
 from quantization.binning import binning
+from coded_computation.impute import is_approx_arithmetic_sequence
 
 def quantize(vals, level, type):
     """
@@ -32,7 +33,7 @@ def quantize(vals, level, type):
     for a in alpha:
         beta[i] = arith_seq[a]
         i += 1
-
+    assert is_approx_arithmetic_sequence(arith_seq)
     return beta.reshape(vals.shape), np.array(arith_seq).reshape(-1,1)
 # some checks and testing
 """vals = np.random.normal(0,4,200)

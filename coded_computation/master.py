@@ -31,11 +31,8 @@ class master:
         :return: np.dot(w,data) but like with low access
         """
         nodes_list = self.nodes_list
-        num_nodes = len(nodes_list)
 
         # partition w and do a query
-        # access = np.zeros(m) im not going to bother computing access, its annoying and we already saw that its about 2 per node
-        # ans_array, access[0] = nodes_array[0].query(w[width*0:width*(0+1)])
 
         # linear comb of rows
         if w.shape[0] == 1:
@@ -94,9 +91,13 @@ class master:
 
     def uniform_query(self, w, lvl, dict, X, index):
         """
-        :param w: query, values are from an arithmetic sequence, potentially incomplete
-        :param master: stores data array which is being queried
-        :return: <data,w> or <w,data>
+
+        :param w: query. must be subset of arithmetic sequence
+        :param lvl: log2 the cardility of arithmetic sequence
+        :param dict: for data recording
+        :param X: actual data for robustness
+        :param index: passed from quantize function, needed to create lookup tobale to mkae +-1 queries
+        :return:
         """
         if not is_approx_arithmetic_sequence(index):
             raise ValueError(f"recieved bad index{index}")
@@ -152,7 +153,8 @@ class master:
         if not np.allclose(response.reshape(-1, 1), actual.reshape(-1, 1), atol=1e-3):
             error = np.linalg.norm(response - actual)
             print("response, actual \n", np.hstack((response.reshape(-1, 1)[0:5], actual.reshape(-1, 1)[0:5])), "\n")
-            raise ValueError(f"query does not work: {np.unique(w_flat).reshape(-1, 1)}, with error: {error}")
+            print(f"index passed: {index}")
+            raise ValueError(f"query does not work: from w = {np.unique(w_flat).reshape(-1, 1)}, with error: {error}, shape :{w.shape}")
 
         return response
 
