@@ -3,6 +3,7 @@ import numpy as np
 from coded_computation.general_decoder import general_decoder
 import pandas as pd
 from coded_computation.generate_binary_matrix import generate_binary_matrix
+from impute import is_approx_arithmetic_sequence
 # from coded_computation.impute import impute
 
 
@@ -97,6 +98,8 @@ class master:
         :param master: stores data array which is being queried
         :return: <data,w> or <w,data>
         """
+        if not is_approx_arithmetic_sequence(index):
+            raise ValueError(f"recieved bad index{index}")
         w_flat = w.flatten()
         values = np.unique(w_flat)
         d_min = np.min(np.diff(np.sort(values)))  # calculation of minimum difference
@@ -176,5 +179,4 @@ print(f" the nodes list looks like: {Master_test.nodes_list.shape},"
 my_array = np.array([-1, 1])
 w = np.random.choice(my_array, size=14, replace=True).reshape(1,-1)
 
-print(Master_test.query(w, data))
 """
