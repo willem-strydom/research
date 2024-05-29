@@ -3,7 +3,7 @@ import numpy as np
 from coded_computation.general_decoder import general_decoder
 import pandas as pd
 from coded_computation.generate_binary_matrix import generate_binary_matrix
-from impute import is_approx_arithmetic_sequence
+from coded_computation.impute import is_approx_arithmetic_sequence
 # from coded_computation.impute import impute
 
 
