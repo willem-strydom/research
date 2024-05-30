@@ -18,6 +18,11 @@ def binning(vals, bins: int, type:str):
     if type == 'unif':
         a = mean - np.sqrt(3*var)
         b = mean + np.sqrt(3*var)
+        # check to see if binning is too wide // there are no outliers
+        if a < np.min(vals):
+            a = np.min(vals)
+        if b > np.max(vals):
+            b = np.max(vals)
         return np.linspace(a, b, num=2**bins +1)
     elif type == 'gauss':
         if bins == 1:
