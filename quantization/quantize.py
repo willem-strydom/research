@@ -36,7 +36,7 @@ def quantize(vals, level, type):
     assert is_approx_arithmetic_sequence(arith_seq)
     return beta.reshape(vals.shape), np.array(arith_seq).reshape(-1,1)
 # some checks and testing
-vals = np.random.normal(0,4,200)
+"""vals = np.random.normal(0,4,200)
 lvl = 9
 type = "unif"
 result, seq = quantize(vals, lvl, type)
@@ -51,5 +51,5 @@ print(f"median err: {np.median(np.abs(vals - result))}")
 
 set1 = set(result)
 set2 = set(seq.flatten())
-print(set1.issubset(set2))
+print(set1.issubset(set2))"""
 
