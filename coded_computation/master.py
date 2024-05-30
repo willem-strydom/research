@@ -3,7 +3,7 @@ import numpy as np
 from coded_computation.general_decoder import general_decoder
 import pandas as pd
 from coded_computation.generate_binary_matrix import generate_binary_matrix
-from coded_computation.impute import is_approx_arithmetic_sequence
+from coded_computation.impute import is_approx_arithmetic_sequence, impute
 # from coded_computation.impute import impute
 
 
@@ -101,6 +101,10 @@ class master:
         """
         if not is_approx_arithmetic_sequence(index):
             raise ValueError(f"recieved bad index{index}")
+        if np.min(w) != index[0]:
+            wanted_index = index[index >= np.min(w)]
+            unwanted_index = index[index < np.min(w)]
+            index = np.concatenate((wanted_index, unwanted_index)).reshape(-1, 1)
         w_flat = w.flatten()
         values = np.unique(w_flat)
         d_min = np.min(np.diff(np.sort(values)))  # calculation of minimum difference
@@ -130,6 +134,7 @@ class master:
         query_table = pd.DataFrame(table, columns=column_names)
         query_table = query_table.set_index(query_table.columns[0])
 
+
         # get the correct parity from master
         if w.shape[0] == 1:
             parity = np.hstack([node.row_parity for node in self.nodes_list]).reshape(1, -1)
@@ -154,6 +159,8 @@ class master:
             error = np.linalg.norm(response - actual)
             print("response, actual \n", np.hstack((response.reshape(-1, 1)[0:5], actual.reshape(-1, 1)[0:5])), "\n")
             print(f"index passed: {index}")
+            print(f"how we used to make the index: {impute(values, expected_len, dict).reshape(-1,1)}")
+            print(f"tabel: {query_table}")
             raise ValueError(f"query does not work: from w = {np.unique(w_flat).reshape(-1, 1)}, with error: {error}, shape :{w.shape}")
 
         return response

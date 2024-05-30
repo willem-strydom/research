@@ -90,6 +90,7 @@ def run(X,y, filename):
         for w_lvl in range(4, 9):
             for grd_lvl in range(2, 6):
                 # logic for calculations
+                print(w_lvl, grd_lvl)
                 w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
 
                 start_time = time.time()
