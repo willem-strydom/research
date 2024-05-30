@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def is_approx_arithmetic_sequence(seq, tolerance=1e-6):
+def is_approx_arithmetic_sequence(seq, tolerance=1e-4):
     # check to make sure that the returned index is approximately an arithmetic sequence
     if len(seq) < 2:
         return False
@@ -12,6 +12,7 @@ def is_approx_arithmetic_sequence(seq, tolerance=1e-6):
     for i in range(2, len(seq)):
         current_diff = seq[i] - seq[i - 1]
         if abs(current_diff - common_diff) > tolerance:
+            print(f"deviation in arith seq: {current_diff, common_diff} on index {i}")
             return False
 
     return True

@@ -20,13 +20,13 @@ def quantize(vals, level, type):
     alpha = np.digitize(vals, partitions).flatten()
     # map them to appropriate values based on the mean of func evaluation of the respective bin edges
     beta = np.zeros(alpha.shape)
-    arith_seq = [(partitions[0] + partitions[0] - step) / 2]
+    arith_seq = [partitions[0] - step/2]
     for i in range(1, len(partitions)):
         arith_seq.append(
             (partitions[i] + partitions[i-1])/2
                           )
     arith_seq.append(
-        (partitions[-1] + partitions[-1] + step) / 2
+        partitions[-1] + step/2
     )
     i = 0
 
@@ -36,19 +36,20 @@ def quantize(vals, level, type):
     assert is_approx_arithmetic_sequence(arith_seq)
     return beta.reshape(vals.shape), np.array(arith_seq).reshape(-1,1)
 # some checks and testing
-"""vals = np.random.normal(0,4,200)
+vals = np.random.normal(0,4,200)
 lvl = 9
 type = "unif"
 result, seq = quantize(vals, lvl, type)
 print(f"number of unique quantizations: {len(np.unique(result))} \n")
 print(f"range of quantized vals {np.min(result)}, {np.max(result)}")
 print(f"range of unquantized vals {np.min(vals)}, {np.max(vals)}")
-print(f"abs err: {np.mean(np.abs(vals - result))}")
+print(f"mean abs err: {np.mean(np.abs(vals - result))}")
 feasible = (np.max(result) - np.min(result))/ 2**lvl
 print(f"feasible error: {feasible}")
 print(f" number of bad quantizations {np.sum(np.abs(vals - result) > feasible)}")
+print(f"median err: {np.median(np.abs(vals - result))}")
 
 set1 = set(result)
-set2 = set(seq)
-print(set1.issubset(set2))"""
+set2 = set(seq.flatten())
+print(set1.issubset(set2))
 
