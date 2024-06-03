@@ -59,7 +59,7 @@ class node:
         :param w: query vector
         :return: Result of the query and number of chunks accessed.
         """
-        # add a line to do the un-coded version?
+        # add a bit to do the un-coded version?
         if self.decoder == None:
             # just do the dot product
             if w.shape[0] == 1:

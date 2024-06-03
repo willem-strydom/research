@@ -30,14 +30,14 @@ def grdescentnormal(func, w0, stepsize, maxiter, Master, yTr, X,tolerance=1e-02)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
-            stepsize = (stepsize / 1.01) * 0.5
+            stepsize = (stepsize / 1.1) * 0.8
             w = w - stepsize * prior_gradient
         else:
             if num_iter < 10:
                 stepsize = stepsize * 1.1
                 w = w - stepsize * gradient
             else:
-                stepsize = stepsize * 1.01
+                stepsize = stepsize * 1.1
                 w = w - stepsize * gradient
         if stepsize < eps:
             break
