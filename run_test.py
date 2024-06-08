@@ -59,6 +59,5 @@ def run(X,y, filename):
 
     return 0
 
-
 X,y,w = gen_margin_seperable_data(100,10,1)
 run(X,y,"test_data.csv")
