@@ -84,6 +84,8 @@ class node:
                 accessed_slices = coded_data[:,boolean_w]
                 accessed_w = low_access_w[boolean_w]
                 dict['access'] += len(accessed_w)
+                if len(accessed_w) > 2:
+                    print(accessed_w, low_access_w)
                 inner_prod = (accessed_slices @ accessed_w).reshape(response.shape)
                 response += inner_prod
             return response

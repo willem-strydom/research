@@ -2,15 +2,16 @@ import numpy as np
 from quantization.quantize import quantize
 import pandas as pd
 import time
-def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance):
+from get_loss import get_loss
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance, Xt, yt):
 
     """
     :param func: quantlog function
     :param w0: usually uniformly random in {-1,1}^d
     :param stepsize: initial learning rate, rate is modular in implementation
     :param maxiter: maximum iterations until hardstop
-    :param xTr: train data.... vestigial at this point
-    :param yTr: train labels
+    :param X: train data.... vestigial at this point
+    :param y: train labels
     :param master: train data stored in coded distributed system
     :param tolerance: The smallest gradient norm acceptable
     :return: w, num_iter
@@ -30,16 +31,17 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     while num_iter < maxiter:
         w, index = quantize(w, w_lvl, "unif")
         dict = {
-                'w-quantization': [w_lvl],
-                'grd-quantization': [grd_lvl],
-                'imputation': [0],
-                'access': 0,
-                'query type': [0],
-                'time': [0],
-                'stop cond': [0],
-                'iters': [0]
-
-            } # for data collection I think
+            'w-quantization': [w_lvl],
+            'grd-quantization': [grd_lvl],
+            'imputation': [0],
+            'access': 0,
+            'query type': [0],
+            'time': [0],
+            'stop cond': [0],
+            'iters': [0],
+            'e in': [0],
+            'e out': [0]
+        }
         loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index)
         if loss > prior_loss:
 
@@ -68,6 +70,8 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         num_iter += 1
     end_time = time.time()
     t = end_time - start_time
+    e_in = get_loss(w,X,y)
+    e_out = get_loss(w, Xt,yt)
     dict = {
         'w-quantization': [w_lvl],
         'grd-quantization': [grd_lvl],
@@ -76,8 +80,9 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         'query type': [0],
         'time': [t],
         'stop cond': [stopcond],
-        'iters': [num_iter]
-
+        'iters': [num_iter],
+        'e in': [e_in],
+        'e out': [e_out]
     }
     record_access(dict, filename)
 

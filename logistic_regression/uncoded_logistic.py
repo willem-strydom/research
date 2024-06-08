@@ -1,23 +1,15 @@
 import numpy as np
 from quantization.quantize import quantize
-from config import X, y
-
-'''
-    INPUT:
-    xTr dxn matrix (each column is an input vector)
-    yTr 1xn matrix (each entry is a label)
-    w weight vector (default w=0) dx1
-
-    OUTPUTS:
-
-    loss = the total loss obtained with w on xTr and yTr
-    gradient = the gradient at w
-
-    [d,n]=size(xTr);
-'''
-
 
 def uncoded_logistic(w, Master, grd_lvl, X, y):
+    """
+    :param w: weights vector with bias
+    :param Master: instance of master class
+    :param grd_lvl: quantization level of the weights vector, needed for quantization func
+    :param X: uncoded data
+    :param y: labels
+    :return: gradient but quantized
+    """
     dictionary = {}
     y_pred = Master.query(w, X, dictionary)
 

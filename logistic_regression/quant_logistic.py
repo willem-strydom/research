@@ -1,26 +1,21 @@
 import numpy as np
 import pandas as pd
-
 from quantization.quantize import quantize
-from coded_computation.uniform_query import uniform_query
-import csv
-
-'''
-    INPUT:
-    xTr dxn matrix (each column is an input vector)
-    yTr 1xn matrix (each entry is a label)
-    w weight vector (default w=0) dx1
-
-    OUTPUTS:
-
-    loss = the total loss obtained with w on xTr and yTr
-    gradient = the gradient at w
-
-    [d,n]=size(xTr);
-'''
 
 
 def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
+    """
+    :param w: weights vector, needs to be numpy column vec
+    :param Master: master instance
+    :param w_lvl: quantization level for w
+    :param grd_lvl: quantization level for grd
+    :param dict: for performance recording
+    :param X: raw data
+    :param y: labels
+    :param filename: where dict is recorded as csv
+    :param index: for lookup table to make +-1 queries
+    :return: gradient, as numpy column vector
+    """
     #y_pred = w.T @ xTr ... now with low access
     y_pred = Master.uniform_query(w, w_lvl, dict, X, index)
     vals = y * y_pred
@@ -41,8 +36,9 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
         'query type': [0],
         'time': [0],
         'stop cond': [0],
-        'iters': [0]
-
+        'iters': [0],
+        'e in': [0],
+        'e out': [0]
     }
     vals = vals*y
     alpha, index = quantize(vals, grd_lvl, "unif")
