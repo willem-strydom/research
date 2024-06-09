@@ -50,7 +50,6 @@ def run(X,y, filename):
     print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations in {end - start} seconds")
     repetitions = 3
     for i in range(repetitions):
-        print(i)
         for w_lvl in range(1, 5):
             for grd_lvl in range(1, 4):
 
@@ -58,7 +57,3 @@ def run(X,y, filename):
                 w, num_iters = grdescentquant(func, w0, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, 1e-02, Xt,yt)
 
     return 0
-"""
-X,y,w = gen_margin_seperable_data(100,10,1)
-run(X,y,"test_data.csv")
-"""

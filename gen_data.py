@@ -110,7 +110,6 @@ def gen_margin_seperable_data(n,d, margin):
     for x in X:
         # remove points that are too close to the decision boundary by making index
         distance = np.abs(np.dot(x, w_star)) / np.linalg.norm(w_star)
-        print(distance)
         if distance < margin:
             distance_index[i] = False
         i += 1
