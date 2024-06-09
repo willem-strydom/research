@@ -51,13 +51,14 @@ def run(X,y, filename):
     repetitions = 3
     for i in range(repetitions):
         print(i)
-        for w_lvl in range(4, 9):
-            for grd_lvl in range(2, 6):
+        for w_lvl in range(1, 5):
+            for grd_lvl in range(1, 4):
 
                 w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
                 w, num_iters = grdescentquant(func, w0, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, 1e-02, Xt,yt)
 
     return 0
-
+"""
 X,y,w = gen_margin_seperable_data(100,10,1)
 run(X,y,"test_data.csv")
+"""
