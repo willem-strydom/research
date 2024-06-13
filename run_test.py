@@ -16,7 +16,7 @@ import time
 from gen_data import gen_data, gen_nonlinear_data, gen_margin_seperable_data
 from sklearn.model_selection import train_test_split
 from get_loss import get_loss
-def run(X,y, filename):
+def run(repetitions, X,y, filename):
     func = quant_logistic
     G = np.array([
         [1, 1, 1, 1, 1, 1, 1],
@@ -48,7 +48,7 @@ def run(X,y, filename):
     end = time.time()
     normal_loss = get_loss(w, Xt, yt)
     print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations in {end - start} seconds")
-    repetitions = 3
+
     for i in range(repetitions):
         for w_lvl in range(1, 5):
             for grd_lvl in range(1, 4):
