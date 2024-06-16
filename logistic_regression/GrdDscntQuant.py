@@ -39,8 +39,8 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
             'time': [0],
             'stop cond': [0],
             'iters': [0],
-            'e in': [0],
-            'e out': [0]
+            'e in': [-1],
+            'e out': [-1]
         }
         loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index)
         if loss > prior_loss:
