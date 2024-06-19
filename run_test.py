@@ -57,3 +57,7 @@ def run(repetitions, X,y, filename):
                 w, num_iters = grdescentquant(func, w0, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, 1e-02, Xt,yt)
 
     return 0
+
+X,y = gen_nonlinear_data(1000,100,1)
+
+run(1,X,y,"test.csv")
