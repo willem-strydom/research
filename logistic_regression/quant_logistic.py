@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from quantization.quantize import quantize
+from logistic_regression.stable_logistic import stable_sigmoid, stable_loss
 
 
 def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
@@ -18,13 +19,16 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
     """
     #y_pred = w.T @ xTr ... now with low access
     y_pred = Master.uniform_query(w, w_lvl, dict, X, index)
-    vals = y * y_pred
-    loss = np.mean(np.log(1 + np.exp(-vals)))
+    vals = -y * y_pred
+    # loss = np.mean(np.log(1 + np.exp(-vals)))
+    loss = stable_loss(vals)
     record_access(dict, filename)
 
-    func = lambda x: 1 / (1 + np.exp(x))
-    func = np.vectorize(func)
-    vals = func(vals)
+    func = np.vectorize(stable_sigmoid)
+    den0 = (1 + np.exp(-vals))
+    den = func(vals)
+    if not np.allclose(den,den0):
+        print(f'error: {den, den0}')
 
     # then quantize y_i*alpha_i
     # reset dict
@@ -37,11 +41,11 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
         'time': [0],
         'stop cond': [0],
         'iters': [0],
-        'e in': [0],
-        'e out': [0]
+        'e in': [-1],
+        'e out': [-1 ]
     }
-    vals = vals*y
-    alpha, index = quantize(vals, grd_lvl, "unif")
+    den = den*y
+    alpha, index = quantize(den, grd_lvl, "unif")
     alpha = alpha.reshape(1,-1)
     gradient = - Master.uniform_query(alpha, grd_lvl, dict, X, index)/len(y)
     record_access(dict, filename)

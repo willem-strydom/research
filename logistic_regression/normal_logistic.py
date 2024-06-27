@@ -1,6 +1,6 @@
 
 import numpy as np
-
+from logistic_regression.stable_logistic import stable_sigmoid, stable_loss
 
 '''
 
@@ -17,24 +17,25 @@ import numpy as np
     [n,d]=size(xTr);
 '''
 def normallogistic(w, Master,yTr, X):
-    """y_pred = w.T @ xTr
-    loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
-    num = yTr * xTr
-    den = (1 + np.exp(yTr * (y_pred)))
-    gradient = -np.sum((num / den), axis=1).reshape(-1, 1)"""
+    """
+    :param w: model
+    :param Master: has coded data
+    :param yTr: labels in +-1
+    :param X: raw data
+    :return: loss, gradient
+    """
     dictionary = {}
     y_pred = Master.query(w, X, dictionary)
-    loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
-    den = (1 + np.exp(yTr * y_pred))
+    vals = yTr * y_pred
+    loss = stable_loss(-vals) #loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
+    # stable_sig = func(values)
+    # normal_sig = 1 / (1 + np.exp(-values))
+    func = np.vectorize(stable_sigmoid)
+    den = func(-vals)
+    # den0 = 1/(1 + np.exp(-vals)) (old way)
     alpha = yTr / den
+    if np.any(alpha == np.inf):
+        raise ValueError(f"divide by 0 error from w = {w}")
     gradient = - Master.query(alpha.reshape(1, -1), X, dictionary).reshape(-1, 1)/len(yTr)
 
-    """y_pred = X @ w
-    num = X * yTr
-    den = (1 + np.exp(yTr * (y_pred)))
-    actual_gradient = -np.sum((num / den), axis=0).reshape(-1, 1)
-
-    print(actual_gradient.shape, gradient.shape)
-    if not np.allclose(actual_gradient, gradient):
-        raise ValueError(f"actual, {actual_gradient[0:5]}, ours {gradient[0:5]}")"""
     return loss, gradient

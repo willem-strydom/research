@@ -45,7 +45,7 @@ class master:
             expected = w @ X
             if not np.allclose(ans, expected):
                 raise ValueError(
-                    f"wrong +- query: expected {expected.shape}, got {ans.shape}. with error: {np.abs(expected - ans)[0:5]}")
+                    f"wrong +- query: recieved: {w} expected {expected.shape}, got {ans.shape}. with error: {np.abs(expected - ans)[0:5]}")
             return ans
 
         # linear comb of cols
@@ -99,18 +99,14 @@ class master:
         :param index: passed from quantize function, needed to create lookup tobale to mkae +-1 queries
         :return:
         """
-        """
-        if np.min(w) != index[0]:
-            wanted_index = index[index >= np.min(w)]
-            unwanted_index = index[index < np.min(w)]
-            index = np.concatenate((wanted_index, unwanted_index)).reshape(-1, 1)"""
-
+        # for simplicity
         w_flat = w.flatten()
         values = np.unique(w_flat)
         d_min = np.min(np.diff(np.sort(index.flatten())))  # calculation of minimum difference
         a = np.min(index)
         d = d_min
 
+        # determine if row or column query
         if len(w) == X.shape[1]:
             expected_len = 2 ** lvl
             actual = X @ w
@@ -121,11 +117,6 @@ class master:
             actual = w @ X
             dict['query type'] = ['grd']
         # robust index creation is needed
-        """if len(values) != expected_len:
-            values = impute(values, expected_len, dict)
-        index = values
-        index = index.reshape(-1, 1)"""
-
         # create query table
         column_names = list(range(0, lvl + 1))
 
@@ -155,12 +146,7 @@ class master:
         # ensure that query is done correctly
 
         if not np.allclose(response.reshape(-1, 1), actual.reshape(-1, 1), atol=1e-3):
-            error = np.linalg.norm(response - actual)
-            print("response, actual \n", np.hstack((response.reshape(-1, 1)[0:5], actual.reshape(-1, 1)[0:5])), "\n")
-            print(f"index passed: {index}")
-            print(f"tabel: {query_table}")
-            print(f"how we used to make the index: {impute(values, expected_len, dict).reshape(-1, 1)}")
-            raise ValueError(f"query does not work: from w = {np.unique(w_flat).reshape(-1, 1)}, with error: {error}, shape :{w.shape}")
+            raise ValueError(f"query does not work: from w = {np.unique(w_flat).reshape(-1, 1)}, shape :{w.shape}")
 
         return response
 
