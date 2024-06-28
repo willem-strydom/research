@@ -19,14 +19,14 @@ def quant_logistic(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index):
     """
     #y_pred = w.T @ xTr ... now with low access
     y_pred = Master.uniform_query(w, w_lvl, dict, X, index)
-    vals = -y * y_pred
+    vals = y * y_pred
     # loss = np.mean(np.log(1 + np.exp(-vals)))
     loss = stable_loss(vals)
     record_access(dict, filename)
 
     func = np.vectorize(stable_sigmoid)
     den0 = (1 + np.exp(-vals))
-    den = func(vals)
+    den = func(-vals)
     if not np.allclose(den,den0):
         print(f'error: {den, den0}')
 
