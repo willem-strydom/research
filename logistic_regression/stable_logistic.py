@@ -11,7 +11,7 @@ def stable_loss(x):
 
 
 def stable_sigmoid(x):
-    # compute sigmoid function robustly to avoid overflow
+    # compute sigmoid function = 1/1+e^{-x} robustly to avoid overflow
     """
     :param x: value
     :return: sigmoid(x)
@@ -22,20 +22,3 @@ def stable_sigmoid(x):
     else:
         z = np.exp(x)
         return z / (1 + z)
-
-# check to make sure all same
-
-for _ in range(100000):
-    values = np.random.normal(loc=0.0, scale=100.0, size=100)
-    stable_l = stable_loss(values)
-    normal_l = np.sum(np.log(1 + np.exp(values)))
-
-    func = np.vectorize(stable_sigmoid)
-    stable_sig = func(values)
-    normal_sig = 1/(1+np.exp(-values))
-    if not np.allclose(stable_sig, normal_sig):
-        print('oopsies')
-        print(np.allclose(stable_sig, normal_sig))
-        print(stable_sig.shape, normal_sig.shape)
-    if np.any(1/stable_sig == np.nan):
-        print("divide by 0 error")
