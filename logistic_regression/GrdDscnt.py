@@ -19,10 +19,10 @@ def grdescentnormal(func, w0, stepsize, maxiter, Master, yTr, X,tolerance=1e-02)
     w = w0
     gradient = 0
     prior_gradient = np.zeros(w.shape)
-    # why init to 0? should be large number or else bad no?
-    prior_loss = 1e06
-    # Increase the stepsize by a factor of 1.01 each iteration where the loss goes down,
-    # and decrease it by a factor 0.5 if the loss went up. ...
+    # init loss as infinity
+    prior_loss = np.inf
+    # Increase the stepsize by a factor of 1.1 each iteration where the loss goes down,
+    # and decrease it by a factor 0.8 if the loss went up. ...
     # also undo the last update in that case to make sure
     # the loss decreases every iteration
     while num_iter < maxiter:

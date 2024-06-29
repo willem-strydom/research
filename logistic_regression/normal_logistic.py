@@ -11,15 +11,12 @@ def normallogistic(w, Master,yTr, X):
     :param X: raw data
     :return: loss, gradient
     """
-    dictionary = {}
+    dictionary = {}  # positional arg for master.query
     y_pred = Master.query(w, X, dictionary)
     vals = yTr * y_pred
-    loss = stable_loss(-vals) #loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
-    # stable_sig = func(values)
-    # normal_sig = 1 / (1 + np.exp(-values))
+    loss = stable_loss(-vals)
     func = np.vectorize(stable_sigmoid)
-    den = func(-vals)
-    # den0 = 1/(1 + np.exp(-vals)) (old way)
+    den = func(-vals)  # computes sigmoid func 1/1+e^{-x}, so pass -vals for correct gradient
     alpha = yTr * den
     gradient = - Master.query(alpha.reshape(1, -1), X, dictionary).reshape(-1, 1)/len(yTr)
     return loss, gradient
