@@ -45,11 +45,12 @@ def run(repetitions, X,y, filename):
     for i in range(repetitions):
         w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
         print(i)
+        w, iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, Master_uncoded, y, X, tolerance=1e-02)
+        eout = get_loss(w, Xt, yt)
+        ein = get_loss(w, X, y)
+        print(iters, eout, ein)
         for w_lvl in range(1, 5):
             for grd_lvl in range(1, 4):
-                w, iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, Master_uncoded, y, X, tolerance=1e-02)
-                eout = get_loss(w, Xt, yt)
-                ein = get_loss(w, X, y)
                 w0 = np.random.uniform(-1, 1, (X.shape[1], 1))
                 w, num_iters = grdescentquant(func, w0, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, 1e-02, Xt,yt,ein,eout,iters)
 
