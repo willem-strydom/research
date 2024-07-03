@@ -3,7 +3,7 @@ from quantization.quantize import quantize
 import pandas as pd
 import time
 from get_loss import get_loss
-def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance, Xt, yt):
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance, Xt, yt, ein, eout, iters):
 
     """
     :param func: quantlog function
@@ -76,9 +76,9 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         'query type': [0],
         'time': [t],
         'stop cond': [stopcond],
-        'iters': [num_iter],
-        'e in': [e_in],
-        'e out': [e_out]
+        'iters': [(num_iter - iters)/iters],
+        'e in': [(e_in - ein)/ein],
+        'e out': [(e_out-eout)/eout]
     }
     record_access(dict, filename)
 
