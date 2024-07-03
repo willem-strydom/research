@@ -46,8 +46,9 @@ def run(repetitions, X,y, filename):
     start = time.time()
     w, num_iters = grdescentnormal(normallogistic, w0, stepsize, maxiter, Master_uncoded, y, X, tolerance=1e-02)
     end = time.time()
-    normal_loss = get_loss(w, Xt, yt)
-    print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations in {end - start} seconds")
+    e_out = get_loss(w, Xt, yt)
+    e_in = get_loss(w,X,y)
+    print(f"e in, e out from unquantized logistic regresison: {e_in,e_out} on {num_iters} iterations in {end - start} seconds")
 
     for i in range(repetitions):
         print(i)
