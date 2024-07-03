@@ -50,6 +50,7 @@ def run(repetitions, X,y, filename):
     print(f"loss from unquantized logistic regresison: {normal_loss} on {num_iters} iterations in {end - start} seconds")
 
     for i in range(repetitions):
+        print(i)
         for w_lvl in range(1, 5):
             for grd_lvl in range(1, 4):
 
