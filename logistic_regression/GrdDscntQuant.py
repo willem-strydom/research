@@ -61,10 +61,6 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
         if np.linalg.norm(gradient) < tolerance:
             stopcond = 2
             break
-        if np.array_equal(gradient,prior_gradient):
-            stopcond = 3
-            num_iter +=1
-            break
         prior_loss = loss
         prior_gradient = gradient.copy()
         num_iter += 1
