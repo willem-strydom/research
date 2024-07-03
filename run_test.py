@@ -58,6 +58,3 @@ def run(repetitions, X,y, filename):
 
     return 0
 
-X,y = gen_nonlinear_data(1000,100,1)
-
-run(1,X,y,"test.csv")
