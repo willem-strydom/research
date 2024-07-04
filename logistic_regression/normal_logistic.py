@@ -1,21 +1,6 @@
-
+from stable_logistic import stable_sigmoid, stable_loss
 import numpy as np
 
-
-'''
-
-    INPUT:
-    xTr nxd matrix (each row is an input vector)
-    yTr nx1 matrix (each entry is a label)
-    w weight vector (default w=0)
-
-    OUTPUTS:
-
-    loss = the total loss obtained with w on xTr and yTr
-    gradient = the gradient at w
-
-    [n,d]=size(xTr);
-'''
 def normallogistic(w, Master,yTr, X):
     """y_pred = w.T @ xTr
     loss = np.sum(np.log(1 + np.exp(-yTr * y_pred)))
