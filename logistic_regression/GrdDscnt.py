@@ -14,13 +14,10 @@ def grdescentnormal(func, w0, stepsize, maxiter, Master, yTr, X,tolerance=1e-02)
     # w = final weight vector
     eps = 2.2204e-14  # minimum step size for gradient descent
 
-    # YOUR CODE HERE
-    num_iter = 0
+    num_iter = 1
     w = w0
-    gradient = 0
     prior_gradient = np.zeros(w.shape)
-    # why init to 0? should be large number or else bad no?
-    prior_loss = 1e06
+    prior_loss = np.inf
     # Increase the stepsize by a factor of 1.01 each iteration where the loss goes down,
     # and decrease it by a factor 0.5 if the loss went up. ...
     # also undo the last update in that case to make sure
