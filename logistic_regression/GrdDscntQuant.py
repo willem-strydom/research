@@ -1,8 +1,8 @@
 import numpy as np
 from quantization.quantize import quantize
-import pandas as pd
 import time
 from get_loss import get_loss
+from util import record_access
 def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance, Xt, yt, ein, eout, iters):
 
     """
@@ -83,9 +83,3 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     record_access(dict, filename)
 
     return w, num_iter
-
-def record_access(dict, filename):
-
-    df = pd.DataFrame(dict)
-    df.to_csv(filename, mode='a', index=False, header=False)
-
