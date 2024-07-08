@@ -35,6 +35,7 @@ def run(repetitions, X,y, filename):
     #X,y = gen_nonlinear_data(500, 40, 1)
 
     X, Xt, y, yt = train_test_split(X, y, test_size=0.2)
+
     X, y = pad(X, y, 7)
     Xt, yt = pad(Xt, yt, 7)
 

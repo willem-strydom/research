@@ -97,7 +97,7 @@ hill_train_x, hill_train_y = pad(hill_train_x, hill_train_y, 7)
 hill_test_x, hill_test_y = pad(hill_test_x, hill_test_y, 7)
 print(hill_train_x.shape, hill_train_y.shape, hill_test_x.shape, hill_test_y.shape)
 
-"""
+""""""
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -113,4 +113,4 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # Print shapes after the split
 print(X_train.shape, y_train.shape)
-print(X_test.shape, y_test.shape)
+print(X_test.shape, y_test.shape)"""
