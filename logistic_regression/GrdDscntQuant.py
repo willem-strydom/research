@@ -68,6 +68,7 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     t = end_time - start_time
     e_in = get_loss(w,X,y)
     e_out = get_loss(w, Xt,yt)
+    # iters, e in, e out recorded as normalized difference, so +value is quantized did worse, 0 is same, 1 is quantized was 2x as much, etc
     dict = {
         'w-quantization': [w_lvl],
         'grd-quantization': [grd_lvl],

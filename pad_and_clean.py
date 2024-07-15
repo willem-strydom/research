@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.io import arff
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 """
 # Load the .arff file
@@ -27,7 +27,7 @@ def clean_and_scale(df, target):
             df = pd.get_dummies(df, columns=[col], drop_first=True)
 
     # Feature scaling
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     scaled_features = scaler.fit_transform(df.drop(target, axis=1))
     df_scaled = pd.DataFrame(scaled_features, columns=df.drop(target, axis=1).columns)
     df_scaled[target] = df[target].values
