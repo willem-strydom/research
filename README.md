@@ -22,6 +22,13 @@ This Repository was developed by:
 Project is entirely python. Requires numpy, and pandas to work.
 Matplotlib is used for plotting sometimes.
 
-# to do...
-do a run of the test alg, but add back the func to record the access node by node, 
-so that we can make plots and stuff.
+# Problems
+
+- The quantization is likely not optimal... there honestly isn't that much that can be done about that we imagine.
+- Creating the lookup table for decoding is O(2^n), which probably prevents low access ratio codes from being used.
+- Convergence is noisy and bad at low quantization levels.
+
+# Next Up
+
+- make the quantization dynamic. The algorithm would adjsut the quantization rate, maybe just monotonically, based on
+some criterion until the point where there are no more access gains, and the just run as an unquantized version of the algorithm.

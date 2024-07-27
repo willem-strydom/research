@@ -3,7 +3,8 @@ from quantization.quantize import quantize
 import pandas as pd
 import time
 from get_loss import get_loss
-def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, filename, tolerance, Xt, yt):
+from logistic_regression.normal_logistic import normallogistic
+def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl_max, grd_lvl, X, y, filename, tolerance, Xt, yt):
 
     """
     :param func: quantlog function
@@ -14,6 +15,8 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     :param y: train labels
     :param master: train data stored in coded distributed system
     :param tolerance: The smallest gradient norm acceptable
+    :param w_lvl_max: The largest acceptable quantization level for w
+    :param grd_lvl_max: --//-- for the "grd" (y_ix_i part of the computation of the gradient)
     :return: w, num_iter
     """
     eps = 2.2204e-14  # minimum step size for gradient descent
@@ -27,7 +30,9 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
     # also undo the last update in that case to make sure
     # the loss decreases every iteration
     stopcond = 0
+    w_lvl = 1
     start_time = time.time()
+
     while num_iter < maxiter:
         w, index = quantize(w, w_lvl, "unif")
         dict = {
@@ -42,11 +47,14 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
             'e in': [-1],
             'e out': [-1]
         }
-        loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index)
+        if w_lvl == np.inf:
+            loss, gradient = func(w, Master, y, X)
+        else:
+            loss, gradient = func(w, Master, w_lvl, grd_lvl, dict, X, y, filename, index)
         if loss > prior_loss:
 
             w = w + stepsize * prior_gradient
-            stepsize = (stepsize/ 1.1) * 0.8
+            stepsize = (stepsize/ 1.1) * 0.5
             w = w - stepsize * prior_gradient
         else:
             if num_iter < 10:
@@ -56,11 +64,18 @@ def grdescentquant(func, w, stepsize, maxiter, Master, w_lvl, grd_lvl, X, y, fil
                 stepsize = stepsize * 1.1
                 w = w - stepsize * gradient
         if stepsize < eps:
-            stopcond = 1
-            break
+            if w_lvl == w_lvl_max:
+                w_lvl == np.inf
+                func = normallogistic
+            elif w_lvl == np.inf:
+                stopcond = 1
+                break
+            else:
+                w_lvl += 1
+                stepsize = 1e-4
         if np.linalg.norm(gradient) < tolerance:
-            stopcond = 2
-            break
+                stopcond = 2
+                break
         prior_loss = loss
         prior_gradient = gradient.copy()
         num_iter += 1

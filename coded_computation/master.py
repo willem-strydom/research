@@ -30,8 +30,6 @@ class master:
         :param nodes_array: the storage nodes from master in an mxn array
         :return: np.dot(w,data) but like with low access
         """
-        nodes_list = self.nodes_list
-
         # partition w and do a query
 
         # linear comb of rows
@@ -99,11 +97,6 @@ class master:
         :param index: passed from quantize function, needed to create lookup tobale to mkae +-1 queries
         :return:
         """
-        """
-        if np.min(w) != index[0]:
-            wanted_index = index[index >= np.min(w)]
-            unwanted_index = index[index < np.min(w)]
-            index = np.concatenate((wanted_index, unwanted_index)).reshape(-1, 1)"""
 
         w_flat = w.flatten()
         values = np.unique(w_flat)
@@ -120,11 +113,6 @@ class master:
             expected_len = 2 ** lvl
             actual = w @ X
             dict['query type'] = ['grd']
-        # robust index creation is needed
-        """if len(values) != expected_len:
-            values = impute(values, expected_len, dict)
-        index = values
-        index = index.reshape(-1, 1)"""
 
         # create query table
         column_names = list(range(0, lvl + 1))
@@ -163,28 +151,3 @@ class master:
             raise ValueError(f"query does not work: from w = {np.unique(w_flat).reshape(-1, 1)}, with error: {error}, shape :{w.shape}")
 
         return response
-
-
-"""
-data = np.random.rand(14,21)
-coded_cols_per_node = 2
-G = np.array([
-    [1, 1, 1, 1, 1, 1, 1],
-    [-1, -1, -1, 1, 1, 1, 1],
-    [-1, 1, 1, -1, -1, 1, 1],
-    [1, -1, -1, -1, -1, 1, 1],
-    [1, -1, 1, -1, 1, -1, 1],
-    [-1, 1, -1, -1, 1, -1, 1],
-    [-1, -1, 1, 1, -1, -1, 1],
-    [1, 1, -1, 1, -1, -1, 1]
-]).T
-Master_test = master(data, None, coded_cols_per_node)
-normal_node = Master_test.nodes_list[0]
-edge_node = Master_test.nodes_list[1]
-print(f" the nodes list looks like: {Master_test.nodes_list.shape},"
-      f" the node looks like: {normal_node.data.shape}, \n"
-      f" the silly node is like{edge_node.data.shape}")
-my_array = np.array([-1, 1])
-w = np.random.choice(my_array, size=14, replace=True).reshape(1,-1)
-
-"""

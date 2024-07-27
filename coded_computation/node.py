@@ -57,9 +57,10 @@ class node:
         The method has been updated to work with the new class structure where each
         chunk's row and column parities are stored separately.
         :param w: query vector
+        :param dict: for logging purposes
         :return: Result of the query and number of chunks accessed.
         """
-        # add a bit to do the un-coded version?
+        # add a bit to do the un-coded version
         if self.decoder == None:
             # just do the dot product
             if w.shape[0] == 1:
