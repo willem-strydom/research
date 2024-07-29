@@ -8,10 +8,11 @@ def general_decoder(B):
     if B is None:
         return None
     B = B.T
-    all_combinations = np.array(np.meshgrid(*[[-1, 1]] * 7)).T.reshape(-1, 7)  # vectors in rows
+    len = B.shape[1]
+    all_combinations = np.array(np.meshgrid(*[[-1, 1]] * len)).T.reshape(-1, len)  # vectors in rows
     lookup_table = {}
     for v in all_combinations:
-        best = 7 # maximum hamming distance between v and b
+        best = len # maximum hamming distance between v and b
         best_code = 0
         best_ind = 0
         sign = 0
@@ -34,7 +35,7 @@ def general_decoder(B):
                 sign = -1
 
         correction = v - best_code
-        code = np.zeros(8)
+        code = np.zeros(B.shape[0])
         code[best_ind] = sign
         lookup_table[tuple(v)] = np.hstack((correction,code))
     return lookup_table
